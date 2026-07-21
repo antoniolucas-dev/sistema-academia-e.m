@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/antoniolucas-dev/sistema-academia-e.m/issues"
   },
-  "homepage": "https://github.com/antoniolucas-dev/sistema-academia-e.m#readme"
+  "homepage": "https://github.com/antoniolucas-dev/sistema-academia-e.m#readme",
+  "dependencies": {
+    "tsconfig.json": "^1.0.11"
+  }
 }
