@@ -20,5 +20,10 @@
   "homepage": "https://github.com/antoniolucas-dev/sistema-academia-e.m#readme",
   "dependencies": {
     "tsconfig.json": "^1.0.11"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^7.0.2"
   }
 }
