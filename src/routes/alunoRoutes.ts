@@ -2,26 +2,31 @@ import { Router } from "express";
 import { AlunoRepository } from "../models/AlunoRepository";
 
 const router = Router();
+
 const repo = new AlunoRepository();
 
 router.get("/", (req, res) => {
-    res.json(repo.listar());
+  res.json(repo.listar());
 });
 
 router.post("/", (req, res) => {
-    const { nome, idade, modalidade } = req.body;
+  const { nome, idade, modalidade } = req.body;
 
-    const aluno = repo.criar(nome, idade, modalidade);
+  const aluno = repo.criar(nome, idade, modalidade);
 
-    res.json(aluno);
+  res.json(aluno);
 });
 
 router.delete("/:id", (req, res) => {
-    repo.remover(req.params.id);
+  repo.remover(req.params.id);
 
-    res.json({
-        mensagem: "Aluno removido"
-    });
+  res.json({
+    mensagem: "Aluno removido"
+  });
 });
 
 export default router;
+
+
+
+

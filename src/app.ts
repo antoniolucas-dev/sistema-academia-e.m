@@ -3,7 +3,7 @@ import path from "path";
 
 import pageRoutes from "./routes/pageRoutes";
 import apiRoutes from "./routes/apiRoutes";
-import alunoRoutes from "./routes/alunoRoutes";
+import alunoRoutes from "./routes/AlunoRoutes";
 
 
 const app = express();
