@@ -1,4 +1,4 @@
-import {Aluno} from "../entities/Alunos";
+import {Aluno} from "../entities/Aluno";
 import {lerArquivo,salvarArquivo} from "../utils/jsonHelper";
 import {gerarId} from "../utils/idGenerator";
 
