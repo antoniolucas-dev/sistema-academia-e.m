@@ -1,11 +1,18 @@
-export default class Aluno{
+export class Aluno {
+    id: string;
+    nome: string;
+    idade: number;
+    modalidade: string;
 
     constructor(
-        public id:string,
-        public nome:string,
-        public idade:number,
-        public modalidade:string,
-        public telefone:string
-    ){}
-
+        id: string,
+        nome: string,
+        idade: number,
+        modalidade: string
+    ) {
+        this.id = id;
+        this.nome = nome;
+        this.idade = idade;
+        this.modalidade = modalidade;
+    }
 }
