@@ -1,0 +1,84 @@
+<%- include("partials/header", { titulo: "Exercícios" }) %>
+
+<%- include("partials/navbar") %>
+
+<div class="container">
+
+    <%- include("partials/sidebar") %>
+
+    <main class="content">
+
+        <div class="page-header">
+
+            <h1>Exercícios</h1>
+
+            <a href="/exercicios/novo" class="btn">
+                Novo Exercício
+            </a>
+
+        </div>
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+                    <th>Nome</th>
+                    <th>Grupo Muscular</th>
+                    <th>Séries</th>
+                    <th>Repetições</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <% if (exercicios && exercicios.length > 0) { %>
+
+                    <% exercicios.forEach(exercicio => { %>
+
+                    <tr>
+
+                        <td><%= exercicio.nome %></td>
+                        <td><%= exercicio.grupoMuscular %></td>
+                        <td><%= exercicio.series %></td>
+                        <td><%= exercicio.repeticoes %></td>
+
+                        <td>
+
+                            <a href="/exercicios/editar/<%= exercicio.id %>" class="btn-edit">
+                                Editar
+                            </a>
+
+                            <a href="/exercicios/excluir/<%= exercicio.id %>" class="btn-delete">
+                                Excluir
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    <% }) %>
+
+                <% } else { %>
+
+                    <tr>
+
+                        <td colspan="5">
+                            Nenhum exercício cadastrado.
+                        </td>
+
+                    </tr>
+
+                <% } %>
+
+            </tbody>
+
+        </table>
+
+    </main>
+
+</div>
+
+<%- include("partials/footer") %>

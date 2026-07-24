@@ -1,0 +1,59 @@
+<%- include("partials/header", { titulo: "Cadastro de Treino" }) %>
+
+<%- include("partials/navbar") %>
+
+<div class="container">
+
+    <%- include("partials/sidebar") %>
+
+    <main class="content">
+
+        <h1>Cadastro de Treino</h1>
+
+        <form
+            action="/treinos/salvar"
+            method="POST"
+            class="form"
+        >
+
+            <input
+                type="text"
+                name="nome"
+                placeholder="Nome do treino"
+                required
+            >
+
+            <input
+                type="text"
+                name="categoria"
+                placeholder="Categoria"
+                required
+            >
+
+            <input
+                type="number"
+                name="duracao"
+                placeholder="Duração (minutos)"
+                required
+            >
+
+            <textarea
+                name="descricao"
+                placeholder="Descrição do treino"
+                rows="5"
+            ></textarea>
+
+            <button
+                type="submit"
+                class="btn"
+            >
+                Salvar
+            </button>
+
+        </form>
+
+    </main>
+
+</div>
+
+<%- include("partials/footer") %>

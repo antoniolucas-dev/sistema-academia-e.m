@@ -1,0 +1,84 @@
+<%- include("partials/header", { titulo: "Treinos" }) %>
+
+<%- include("partials/navbar") %>
+
+<div class="container">
+
+    <%- include("partials/sidebar") %>
+
+    <main class="content">
+
+        <div class="page-header">
+
+            <h1>Treinos</h1>
+
+            <a href="/treinos/novo" class="btn">
+                Novo Treino
+            </a>
+
+        </div>
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+                    <th>Nome</th>
+                    <th>Categoria</th>
+                    <th>Duração</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <% if (treinos && treinos.length > 0) { %>
+
+                    <% treinos.forEach(treino => { %>
+
+                        <tr>
+
+                            <td><%= treino.nome %></td>
+
+                            <td><%= treino.categoria %></td>
+
+                            <td><%= treino.duracao %></td>
+
+                            <td>
+
+                                <a href="/treinos/editar/<%= treino.id %>" class="btn-edit">
+                                    Editar
+                                </a>
+
+                                <a href="/treinos/excluir/<%= treino.id %>" class="btn-delete">
+                                    Excluir
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    <% }) %>
+
+                <% } else { %>
+
+                    <tr>
+
+                        <td colspan="4">
+                            Nenhum treino cadastrado.
+                        </td>
+
+                    </tr>
+
+                <% } %>
+
+            </tbody>
+
+        </table>
+
+    </main>
+
+</div>
+
+<%- include("partials/footer") %>
