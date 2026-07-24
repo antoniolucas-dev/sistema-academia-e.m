@@ -1,59 +1,74 @@
 <%- include("partials/header", { titulo: "Dashboard" }) %>
-
 <%- include("partials/navbar") %>
 
 <div class="container">
-
     <%- include("partials/sidebar") %>
-
     <main class="content">
-
-        <h1>Dashboard</h1>
-
-        <div class="cards">
-
-            <div class="card">
-
-                <h3>Alunos</h3>
-
-                <p>Total de alunos cadastrados.</p>
-
-                <a href="/alunos">Visualizar</a>
-
+        <div class="dashboard-topo">
+            <div>
+                <h1 id="saudacao-usuario" data-nome="<%= typeof usuario !== 'undefined' && usuario ? usuario.nome : '' %>">
+                    Dashboard
+                </h1>
+                <p id="data-atual" class="dashboard-data"></p>
             </div>
-
-            <div class="card">
-
-                <h3>Treinos</h3>
-
-                <p>Gerencie os treinos.</p>
-
-                <a href="/treinos">Visualizar</a>
-
+            <div class="dashboard-relogio" id="relogio-atual">00:00:00</div>
+        </div>
+        <div class="estatisticas">
+            <div class="estatistica-item">
+                <span class="estatistica-valor" data-valor-final="<%= typeof totalAlunos !== 'undefined' ? totalAlunos : 0 %>">0</span>
+                <span class="estatistica-label">Alunos cadastrados</span>
             </div>
-
-            <div class="card">
-
-                <h3>Exercícios</h3>
-
-                <p>Cadastre exercícios.</p>
-
-                <a href="/exercicios">Visualizar</a>
-
+            <div class="estatistica-item">
+                <span class="estatistica-valor" data-valor-final="<%= typeof totalTreinos !== 'undefined' ? totalTreinos : 0 %>">0</span>
+                <span class="estatistica-label">Treinos cadastrados</span>
             </div>
-
-            <div class="card">
-
-                <h3>Perfil</h3>
-
-                <p>Dados do usuário.</p>
-
-                <a href="/perfil">Abrir</a>
-
+            <div class="estatistica-item">
+                <span class="estatistica-valor" data-valor-final="<%= typeof totalExercicios !== 'undefined' ? totalExercicios : 0 %>">0</span>
+                <span class="estatistica-label">Exercícios cadastrados</span>
             </div>
 
         </div>
+        <div class="cards">
+            <div class="card">
+                <h3>Alunos</h3>
+                <p>Total de alunos cadastrados.</p>
+                <a href="/alunos">Visualizar</a>
+
+            </div>
+            <div class="card">
+                <h3>Treinos</h3>
+                <p>Gerencie os treinos.</p>
+                <a href="/treinos">Visualizar</a>
+
+            </div>
+            <div class="card">
+                <h3>Exercícios</h3>
+                <p>Cadastre exercícios.</p>
+                <a href="/exercicios">Visualizar</a>
+
+            </div>
+            <div class="card">
+                <h3>Perfil</h3>
+                <p>Dados do usuário.</p>
+                <a href="/perfil">Abrir</a>
+            </div>
+
+        </div>
+        <% if (typeof matriculasPorMes !== 'undefined' && matriculasPorMes && matriculasPorMes.length > 0) { %>
+            <div class="dashboard-grafico-container">
+                <h2>Matrículas por mês</h2>
+                <canvas
+                    id="grafico-matriculas"
+                    width="600"
+                    height="250"
+                    data-grafico='<%- JSON.stringify(matriculasPorMes) %>'
+                ></canvas>
+            </div>
+        <% } %>
 
     </main>
 
 </div>
+
+<%- include("partials/footer") %>
+<script src="/js/dashboard.js"></script>
