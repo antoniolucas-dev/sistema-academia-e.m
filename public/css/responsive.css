@@ -1,0 +1,22 @@
+@media(max-width:768px){
+    .container{
+        flex-direction:column;
+    }
+    .navbar ul{
+        flex-direction:column;
+    }
+    .sidebar{
+        width:100%;
+    }
+    .cards{
+        grid-template-columns:1fr;
+    }
+    .table{
+        display:block;
+        overflow:auto;
+    }
+    .hero h1{
+        font-size:35px;
+    }
+ }
+    
