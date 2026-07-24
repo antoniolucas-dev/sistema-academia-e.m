@@ -26,20 +26,3 @@ router.delete("/:id", (req, res) => {
 });
 
 export default router;
-
-<<<<<<< HEAD
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
->>>>>>> abca0824f13fd6d43ead5cbad240ff440101a9f0
