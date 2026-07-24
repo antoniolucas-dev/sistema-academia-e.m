@@ -3,11 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= typeof titulo !== 'undefined' ? titulo + ' | Academia' : 'Academia' %></title>
+
+    <title><%= titulo || "Academia E.M" %></title>
+
     <link rel="stylesheet" href="/css/components.css">
-    <% if (typeof titulo !== 'undefined') { %>
-        <link rel="stylesheet" href="/css/<%= titulo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') %>.css">
-    <% } %>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/css/alunos.css">
+    <link rel="stylesheet" href="/css/treinos.css">
+    <link rel="stylesheet" href="/css/exercicios.css">
+    <link rel="stylesheet" href="/css/perfil.css">
     <link rel="stylesheet" href="/css/responsive.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
