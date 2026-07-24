@@ -1,0 +1,87 @@
+<%- include("partials/header", { titulo: "Alunos" }) %>
+
+<%- include("partials/navbar") %>
+
+<div class="container">
+
+    <%- include("partials/sidebar") %>
+
+    <main class="content">
+
+        <div class="page-header">
+
+            <h1>Alunos</h1>
+
+            <a href="/alunos/novo" class="btn">
+                Novo Aluno
+            </a>
+
+        </div>
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Telefone</th>
+                    <th>Faixa</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <% if (alunos && alunos.length > 0) { %>
+
+                    <% alunos.forEach(aluno => { %>
+
+                        <tr>
+
+                            <td><%= aluno.nome %></td>
+
+                            <td><%= aluno.email %></td>
+
+                            <td><%= aluno.telefone %></td>
+
+                            <td><%= aluno.faixa %></td>
+
+                            <td>
+
+                                <a href="/alunos/editar/<%= aluno.id %>" class="btn-edit">
+                                    Editar
+                                </a>
+
+                                <a href="/alunos/excluir/<%= aluno.id %>" class="btn-delete">
+                                    Excluir
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    <% }) %>
+
+                <% } else { %>
+
+                    <tr>
+
+                        <td colspan="5">
+                            Nenhum aluno cadastrado.
+                        </td>
+
+                    </tr>
+
+                <% } %>
+
+            </tbody>
+
+        </table>
+
+    </main>
+
+</div>
+
+<%- include("partials/footer") %>

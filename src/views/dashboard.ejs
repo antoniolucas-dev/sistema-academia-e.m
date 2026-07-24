@@ -1,0 +1,59 @@
+<%- include("partials/header", { titulo: "Dashboard" }) %>
+
+<%- include("partials/navbar") %>
+
+<div class="container">
+
+    <%- include("partials/sidebar") %>
+
+    <main class="content">
+
+        <h1>Dashboard</h1>
+
+        <div class="cards">
+
+            <div class="card">
+
+                <h3>Alunos</h3>
+
+                <p>Total de alunos cadastrados.</p>
+
+                <a href="/alunos">Visualizar</a>
+
+            </div>
+
+            <div class="card">
+
+                <h3>Treinos</h3>
+
+                <p>Gerencie os treinos.</p>
+
+                <a href="/treinos">Visualizar</a>
+
+            </div>
+
+            <div class="card">
+
+                <h3>Exercícios</h3>
+
+                <p>Cadastre exercícios.</p>
+
+                <a href="/exercicios">Visualizar</a>
+
+            </div>
+
+            <div class="card">
+
+                <h3>Perfil</h3>
+
+                <p>Dados do usuário.</p>
+
+                <a href="/perfil">Abrir</a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>

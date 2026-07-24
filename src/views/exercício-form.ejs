@@ -1,0 +1,53 @@
+<%- include("partials/header", { titulo: "Cadastro de Exercício" }) %>
+
+<%- include("partials/navbar") %>
+
+<div class="container">
+
+    <%- include("partials/sidebar") %>
+
+    <main class="content">
+
+        <h1>Cadastrar Exercício</h1>
+
+        <form action="/exercicios/salvar" method="POST" class="form">
+
+            <input
+                type="text"
+                name="nome"
+                placeholder="Nome do exercício"
+                required
+            >
+
+            <input
+                type="text"
+                name="grupoMuscular"
+                placeholder="Grupo muscular"
+                required
+            >
+
+            <input
+                type="number"
+                name="series"
+                placeholder="Séries"
+                required
+            >
+
+            <input
+                type="number"
+                name="repeticoes"
+                placeholder="Repetições"
+                required
+            >
+
+            <button type="submit" class="btn">
+                Salvar
+            </button>
+
+        </form>
+
+    </main>
+
+</div>
+
+<%- include("partials/footer") %>
