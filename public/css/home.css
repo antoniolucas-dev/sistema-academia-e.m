@@ -5,14 +5,34 @@
     justify-content:center;
     align-items:center;
     text-align:center;
+    background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url("/img/hero.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 0 20px;
 }
 
 .hero h1{
     font-size:50px;
-    color:#d40000;
+    color:#ffffff;
 }
 
 .hero p{
     margin:20px 0;
     font-size:20px;
+    color:#f0f0f0;
+}
+
+.hero .btn{
+    background-color:#d40000;
+    color:#ffffff;
+    padding:12px 32px;
+    border-radius:6px;
+    text-decoration:none;
+    font-weight:bold;
+    transition: background-color 0.2s ease;
+}
+
+.hero .btn:hover{
+    background-color:#a80000;
 }
