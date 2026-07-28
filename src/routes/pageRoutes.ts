@@ -12,4 +12,8 @@ router.get("/dashboard", (req, res) => {
     res.render("dashboard");
 });
 
+router.get("/informações", (req, res) => {
+    res.render("informações");
+});
+
 export default router;
