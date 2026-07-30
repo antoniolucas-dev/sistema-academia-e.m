@@ -1,5 +1,4 @@
 import { Aluno } from "../entities/Aluno";
-
 describe("Aluno", () => {
   test("deve criar um aluno corretamente", () => {
     const aluno = new Aluno(
