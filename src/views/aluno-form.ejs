@@ -1,67 +1,28 @@
-<%- include("partials/header", { titulo: "Cadastrar Aluno" }) %>
-
+<%- include("partials/header", { titulo: aluno ? "Editar Aluno" : "Cadastrar Aluno" }) %>
 <%- include("partials/navbar") %>
-
 <div class="container">
-
     <%- include("partials/sidebar") %>
-
     <main class="content">
-
-        <h1>Cadastrar Aluno</h1>
-
+        <h1><%= aluno ? "Editar Aluno" : "Cadastrar Aluno" %></h1>
         <form action="/alunos/salvar" method="POST" class="form">
-
+            <% if (aluno) { %>
+                <input type="hidden" name="id" value="<%= aluno.id %>">
+            <% } %>
             <label for="nome">Nome</label>
-            <input
-                type="text"
-                id="nome"
-                name="nome"
-                placeholder="Nome completo"
-                required
-            >
-
+            <input type="text" id="nome" name="nome" value="<%= aluno ? aluno.nome : '' %>" required>
             <label for="email">E-mail</label>
-            <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Digite o e-mail"
-                required
-            >
-
+            <input type="email" id="email" name="email" value="<%= aluno ? aluno.email : '' %>" required>
             <label for="telefone">Telefone</label>
-            <input
-                type="text"
-                id="telefone"
-                name="telefone"
-                placeholder="(84) 99999-9999"
-                required
-            >
-
+            <input type="text" id="telefone" name="telefone" value="<%= aluno ? aluno.telefone : '' %>" required>
             <label for="faixa">Faixa</label>
             <select id="faixa" name="faixa">
-
-                <option value="Branca">Branca</option>
-                <option value="Cinza">Cinza</option>
-                <option value="Amarela">Amarela</option>
-                <option value="Laranja">Laranja</option>
-                <option value="Verde">Verde</option>
-                <option value="Azul">Azul</option>
-                <option value="Roxa">Roxa</option>
-                <option value="Marrom">Marrom</option>
-                <option value="Preta">Preta</option>
-
+                <% const faixas = ["Branca", "Cinza", "Amarela", "Laranja", "Verde", "Azul", "Roxa", "Marrom", "Preta"]; %>
+                <% faixas.forEach(f => { %>
+                    <option value="<%= f %>" <%= aluno && aluno.faixa === f ? 'selected' : '' %>><%= f %></option>
+                <% }) %>
             </select>
-
-            <button class="btn" type="submit">
-                Salvar Aluno
-            </button>
-
+            <button class="btn" type="submit"><%= aluno ? "Atualizar Aluno" : "Salvar Aluno" %></button>
         </form>
-
     </main>
-
 </div>
-
 <%- include("partials/footer") %>

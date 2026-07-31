@@ -1,34 +1,51 @@
 import Treino from "../entities/Treino";
-export class TreinoRepository {
-  private treinos: Treino[] = [];
+import { lerArquivo, salvarArquivo } from "../utils/jsonHelper";
+import { gerarId } from "../utils/idGenerator";
 
+const ARQUIVO = "dados/treinos.json";
+
+export class TreinoRepository {
   listar(): Treino[] {
-    return this.treinos;
+    return lerArquivo(ARQUIVO);
   }
 
   buscarPorId(id: string): Treino | undefined {
-    return this.treinos.find(treino => treino.id === id);
+    return this.listar().find(treino => treino.id === id);
   }
 
-  criar(nome: string, alunoId: string, exercicios: string[]): Treino {
+  criar(nome: string, categoria: string, duracao: number, descricao: string): Treino {
     const novoTreino: Treino = {
-        id: Date.now().toString(),
-        nome,
-        alunoId,
-        exercicios
-      };
-    this.treinos.push(novoTreino);
+      id: gerarId(),
+      nome,
+      categoria,
+      duracao,
+      descricao
+    };
+
+    const treinos = this.listar();
+    treinos.push(novoTreino);
+    salvarArquivo(ARQUIVO, treinos);
     return novoTreino;
   }
 
-  remover(id: string): boolean {
-    const indice = this.treinos.findIndex(treino => treino.id === id);
-
-    if (indice === -1) {
-      return false;
+  atualizar(id: string, nome: string, categoria: string, duracao: number, descricao: string): boolean {
+    const treinos = this.listar();
+    const indice = treinos.findIndex(t => t.id === id);
+    if (indice !== -1) {
+      treinos[indice] = { id, nome, categoria, duracao, descricao };
+      salvarArquivo(ARQUIVO, treinos);
+      return true;
     }
+    return false;
+  }
 
-    this.treinos.splice(indice, 1);
-    return true;
+  remover(id: string): boolean {
+    const treinos = this.listar();
+    const novos = treinos.filter(treino => treino.id !== id);
+    if (treinos.length !== novos.length) {
+      salvarArquivo(ARQUIVO, novos);
+      return true;
+    }
+    return false;
   }
 }

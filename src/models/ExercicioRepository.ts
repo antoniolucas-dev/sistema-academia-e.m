@@ -1,37 +1,51 @@
-import Exercicio  from "../entities/Exercicio";
+import Exercicio from "../entities/Exercicio";
+import { lerArquivo, salvarArquivo } from "../utils/jsonHelper";
+import { gerarId } from "../utils/idGenerator";
+
+const ARQUIVO = "dados/exercicios.json";
 
 export class ExercicioRepository {
-  private exercicios: Exercicio[] = [];
-
   listar(): Exercicio[] {
-    return this.exercicios;
+    return lerArquivo(ARQUIVO);
   }
 
   buscarPorId(id: string): Exercicio | undefined {
-    return this.exercicios.find(exercicio => exercicio.id === id);
+    return this.listar().find(exercicio => exercicio.id === id);
   }
 
   criar(nome: string, grupoMuscular: string, series: number, repeticoes: number): Exercicio {
     const novoExercicio: Exercicio = {
-        id: Date.now().toString(),
-        nome,
-        grupoMuscular,
-        series,
-        repeticoes
-      };
+      id: gerarId(),
+      nome,
+      grupoMuscular,
+      series,
+      repeticoes
+    };
 
-    this.exercicios.push(novoExercicio);
+    const exercicios = this.listar();
+    exercicios.push(novoExercicio);
+    salvarArquivo(ARQUIVO, exercicios);
     return novoExercicio;
   }
 
-  remover(id: string): boolean {
-    const indice = this.exercicios.findIndex(exercicio => exercicio.id === id);
-
-    if (indice === -1) {
-      return false;
+  atualizar(id: string, nome: string, grupoMuscular: string, series: number, repeticoes: number): boolean {
+    const exercicios = this.listar();
+    const indice = exercicios.findIndex(e => e.id === id);
+    if (indice !== -1) {
+      exercicios[indice] = { id, nome, grupoMuscular, series, repeticoes };
+      salvarArquivo(ARQUIVO, exercicios);
+      return true;
     }
+    return false;
+  }
 
-    this.exercicios.splice(indice, 1);
-    return true;
+  remover(id: string): boolean {
+    const exercicios = this.listar();
+    const novos = exercicios.filter(exercicio => exercicio.id !== id);
+    if (exercicios.length !== novos.length) {
+      salvarArquivo(ARQUIVO, novos);
+      return true;
+    }
+    return false;
   }
 }
