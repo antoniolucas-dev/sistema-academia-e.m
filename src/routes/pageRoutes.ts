@@ -3,7 +3,17 @@ import { emitUpdate } from "../socket";
 
 const router = Router();
 
-// Exemplo no POST de alunos
+// Página inicial
+router.get("/", (req, res) => {
+    res.render("index");
+});
+
+// Página de alunos
+router.get("/alunos", (req, res) => {
+    res.render("alunos");
+});
+
+// Salvar aluno
 router.post("/alunos/salvar", (req, res) => {
     // ... lógica de salvar ...
 
