@@ -1,19 +1,27 @@
-<%- include("partials/header", { titulo: "Home" }) %>
+<style>
+    .hero {
+        height: 100vh;
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9)), url('/img/musculação.png');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    .hero h1 {
+        font-size: clamp(3rem, 10vw, 5.5rem);
+        font-weight: 900;
+        text-transform: uppercase;
+    }
+    .hero h1 span { color: var(--primary); }
+</style>
 
-<%- include("partials/navbar") %>
-
-<section class="hero">
-
-    <h1>Academia E.M</h1>
-
-    <p>
-        Sistema de gerenciamento de alunos, treinos e exercícios.
-    </p>
-
-    <a href="/login" class="btn">
-        Entrar
-    </a>
-
-</section>
-
-<%- include("partials/footer") %>
+<div class="hero">
+    <h1>DOMINE SUA <span>EVOLUÇÃO.</span></h1>
+    <p>A plataforma definitiva para gestão de treinos e alta performance.</p>
+    <div class="hero-buttons">
+        <a href="/login" class="btn">COMEÇAR AGORA</a>
+    </div>
+</div>

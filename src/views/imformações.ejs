@@ -1,51 +1,62 @@
 <%- include("partials/header", { titulo: "Informações" }) %>
-
 <%- include("partials/navbar") %>
 
-<section class="info-page">
-
-    <h1>Informações</h1>
-    <p class="info-subtitulo">Tudo o que você precisa saber sobre a Academia E.M</p>
-
-    <div class="info-grid">
-
-        <div class="info-card">
-            <h2>Horário de Funcionamento</h2>
-            <ul>
-                <li>Segunda a Sexta: 06h às 22h</li>
-                <li>Sábado: 08h às 18h</li>
-                <li>Domingo: 08h às 12h</li>
-            </ul>
+<div class="container">
+    <%- include("partials/sidebar") %>
+    <main class="content">
+        <div class="page-header">
+            <div>
+                <h1>Informações Institucionais</h1>
+                <p>Detalhes operacionais, planos e canais de atendimento da Academia E.M.</p>
+            </div>
         </div>
 
-        <div class="info-card">
-            <h2>Planos</h2>
-            <ul>
-                <li>Mensal</li>
-                <li>Trimestral</li>
-                <li>Anual</li>
-            </ul>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            
+            <!-- Horário -->
+            <div class="card">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-clock" style="color: var(--primary);"></i>
+                    <h3>Funcionamento</h3>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem; color: var(--text-muted);">
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+                        <span>Segunda a Sexta</span>
+                        <span style="color: #fff;">06h às 22h</span>
+                    </div>
+                    <!-- Adicione os outros horários seguindo o mesmo padrão -->
+                </div>
+            </div>
+
+            <!-- Planos -->
+            <div class="card">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-tags" style="color: var(--primary);"></i>
+                    <h3>Planos de Adesão</h3>
+                </div>
+                <!-- Planos com bordas e ícones de destaque -->
+            </div>
+
+            <!-- Contato -->
+            <div class="card">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-headset" style="color: var(--primary);"></i>
+                    <h3>Atendimento</h3>
+                </div>
+                <!-- Links de Instagram, E-mail e Telefone -->
+            </div>
+
+            <!-- Localização -->
+            <div class="card">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i>
+                    <h3>Localização</h3>
+                </div>
+                <button class="btn" style="width: 100%; background: rgba(255,255,255,0.05);">
+                    VER NO MAPA
+                </button>
+            </div>
         </div>
-
-        <div class="info-card">
-            <h2>Contato</h2>
-            <ul>
-                <li>Telefone: (85) 0000-0000</li>
-                <li>E-mail: contato@academiaem.com</li>
-                <li>Instagram: @academia.em</li>
-            </ul>
-        </div>
-
-        <div class="info-card">
-            <h2>Endereço</h2>
-            <ul>
-                <li>Rua Exemplo, 123</li>
-                <li>Fortaleza - CE</li>
-            </ul>
-        </div>
-
-    </div>
-
-</section>
-
+    </main>
+</div>
 <%- include("partials/footer") %>

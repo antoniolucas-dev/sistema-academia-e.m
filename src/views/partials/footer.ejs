@@ -1,8 +1,10 @@
-<footer>
-    <p>
-    projeto para uso academico
-    </p>
-    </footer>
-    </body>
-    </html>
-    
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    socket.on('dashboard_update', (data) => {
+        // Se estiver no dashboard, atualiza os números
+        if (typeof updateStats === 'function') updateStats();
+        // Se estiver no dashboard, mostra a nova atividade
+        if (typeof addRecentActivity === 'function') addRecentActivity(data.event, data.data);
+    });
+</script>
