@@ -1,50 +1,51 @@
-import { Router } from "express";
-import { ExercicioRepository } from "../models/ExercicioRepository";
+import Exercicio from "../entities/Exercicio";
+import { lerArquivo, salvarArquivo } from "../utils/jsonHelper";
+import { gerarId } from "../utils/idGenerator";
 
-const router = Router();
-const repository = new ExercicioRepository();
+const ARQUIVO = "dados/exercicios.json";
 
-router.get("/", (req, res) => {
-  res.json(repository.listar());
-});
-
-router.get("/:id", (req, res) => {
-  const exercicio = repository.buscarPorId(req.params.id);
-
-  if (!exercicio) {
-    return res.status(404).json({
-      mensagem: "Exercício não encontrado"
-    });
+export class ExercicioRepository {
+  listar(): Exercicio[] {
+    return lerArquivo(ARQUIVO);
   }
 
-  res.json(exercicio);
-});
-
-router.post("/", (req, res) => {
-  const { nome, grupoMuscular, series, repeticoes } = req.body;
-
-  const exercicio = repository.criar(
-    nome,
-    grupoMuscular,
-    Number(series),
-    Number(repeticoes)
-  );
-
-  res.status(201).json(exercicio);
-});
-
-router.delete("/:id", (req, res) => {
-  const removido = repository.remover(req.params.id);
-
-  if (!removido) {
-    return res.status(404).json({
-      mensagem: "Exercício não encontrado"
-    });
+  buscarPorId(id: string): Exercicio | undefined {
+    return this.listar().find(exercicio => exercicio.id === id);
   }
 
-  res.json({
-    mensagem: "Exercício removido"
-  });
-});
+  criar(nome: string, grupoMuscular: string, series: number, repeticoes: number): Exercicio {
+    const novoExercicio: Exercicio = {
+      id: gerarId(),
+      nome,
+      grupoMuscular,
+      series,
+      repeticoes
+    };
 
-export default router;
+    const exercicios = this.listar();
+    exercicios.push(novoExercicio);
+    salvarArquivo(ARQUIVO, exercicios);
+    return novoExercicio;
+  }
+
+  atualizar(id: string, nome: string, grupoMuscular: string, series: number, repeticoes: number): boolean {
+    const exercicios = this.listar();
+    const indice = exercicios.findIndex(e => e.id === id);
+    if (indice !== -1) {
+      exercicios[indice] = { id, nome, grupoMuscular, series, repeticoes };
+      salvarArquivo(ARQUIVO, exercicios);
+      return true;
+    }
+    return false;
+  }
+
+  remover(id: string): boolean {
+    const exercicios = this.listar();
+    const novos = exercicios.filter(exercicio => exercicio.id !== id);
+    if (exercicios.length !== novos.length) {
+      salvarArquivo(ARQUIVO, novos);
+      return true;
+    }
+    return false;
+  }
+}

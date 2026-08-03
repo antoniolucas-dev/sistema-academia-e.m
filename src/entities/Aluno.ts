@@ -12,4 +12,5 @@ export class Aluno {
     this.telefone = telefone;
     this.faixa = faixa;
   }
-}
+}  
+

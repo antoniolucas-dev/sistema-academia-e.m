@@ -9,8 +9,8 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const { nome, idade, modalidade } = req.body;
-  const aluno = repo.criar(nome, idade, modalidade);
+  const { nome, email, telefone, faixa } = req.body;
+  const aluno = repo.criar(nome, email, telefone, faixa);
   res.json(aluno);
 });
 
