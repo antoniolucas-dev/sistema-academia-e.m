@@ -34,7 +34,9 @@
         <div class="card">
             <h3 style="margin-bottom: 1rem;">Acesso rápido</h3>
             <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                <a href="/alunos" class="btn"><i class="fa-solid fa-users"></i> Alunos</a>
+                <% if (usuario && usuario.tipo !== 'Aluno') { %>
+                    <a href="/alunos" class="btn"><i class="fa-solid fa-users"></i> Alunos</a>
+                <% } %>
                 <a href="/treinos" class="btn"><i class="fa-solid fa-dumbbell"></i> Treinos</a>
                 <a href="/exercicios" class="btn"><i class="fa-solid fa-person-running"></i> Exercícios</a>
             </div>

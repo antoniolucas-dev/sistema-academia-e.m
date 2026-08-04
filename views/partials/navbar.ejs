@@ -14,9 +14,11 @@
             <a href="/dashboard">Dashboard</a>
         </li>
 
-        <li>
-            <a href="/alunos">Alunos</a>
-        </li>
+        <% if (usuario && usuario.tipo !== 'Aluno') { %>
+            <li>
+                <a href="/alunos">Alunos</a>
+            </li>
+        <% } %>
 
         <li>
             <a href="/treinos">Treinos</a>
