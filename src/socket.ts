@@ -3,11 +3,15 @@ import { Server as HttpServer } from "http";
 
 let io: Server;
 
-export const initSocket = (server: HttpServer ) => {
+export function initSocket(server: HttpServer  ) {
   io = new Server(server);
-  return io;
-};
+  io.on("connection", (socket) => {
+    console.log("Cliente conectado ao WebSocket");
+  });
+}
 
-export const emitUpdate = (event: string, data: any) => {
-  if (io) io.emit("dashboard_update", { event, data });
-};
+export function emitUpdate(event: string, data: any) {
+  if (io) {
+    io.emit("dashboard_update", { event, data });
+  }
+}

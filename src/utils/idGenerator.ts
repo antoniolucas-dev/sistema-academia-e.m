@@ -1,3 +1,3 @@
-export function gerarId(){
+export function gerarId(): string {
     return Date.now().toString();
-}
+  }
