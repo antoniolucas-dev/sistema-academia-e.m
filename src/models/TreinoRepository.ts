@@ -13,13 +13,14 @@ export class TreinoRepository {
     return this.listar().find(treino => treino.id === id);
   }
 
-  criar(nome: string, categoria: string, duracao: number, descricao: string): Treino {
+  criar(nome: string, categoria: string, duracao: number, descricao: string, alunosIds: string[] = []): Treino {
     const novoTreino: Treino = {
       id: gerarId(),
       nome,
       categoria,
       duracao,
-      descricao
+      descricao,
+      alunosIds
     };
 
     const treinos = this.listar();
@@ -28,11 +29,11 @@ export class TreinoRepository {
     return novoTreino;
   }
 
-  atualizar(id: string, nome: string, categoria: string, duracao: number, descricao: string): boolean {
+  atualizar(id: string, nome: string, categoria: string, duracao: number, descricao: string, alunosIds: string[] = []): boolean {
     const treinos = this.listar();
     const indice = treinos.findIndex(t => t.id === id);
     if (indice !== -1) {
-      treinos[indice] = { id, nome, categoria, duracao, descricao };
+      treinos[indice] = { id, nome, categoria, duracao, descricao, alunosIds };
       salvarArquivo(ARQUIVO, treinos);
       return true;
     }

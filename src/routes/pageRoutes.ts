@@ -132,29 +132,49 @@ router.get("/alunos/excluir/:id", somenteGestor, (req, res) => {
 
 // --- GESTÃO DE TREINOS ---
 
+// express.urlencoded envia checkbox[] como string (1 marcado), array (2+) ou undefined (nenhum) — isso normaliza pra array sempre
+function normalizarLista(valor: unknown): string[] {
+    if (!valor) return [];
+    return Array.isArray(valor) ? valor.map(String) : [String(valor)];
+}
+
 router.get("/treinos", somenteLogado, (req, res) => {
-    const treinos = treinoRepo.listar();
-    res.render("treinos", { treinos });
+    const usuario = req.session.usuario!;
+    const todosTreinos = treinoRepo.listar();
+    const alunos = alunoRepo.listar();
+
+    let treinos = todosTreinos;
+    let meuAluno = null;
+
+    if (usuario.tipo === "Aluno") {
+        meuAluno = alunoRepo.buscarPorUsuarioId(usuario.id) || null;
+        treinos = meuAluno
+            ? todosTreinos.filter(t => (t.alunosIds || []).includes(meuAluno!.id))
+            : [];
+    }
+
+    res.render("treinos", { treinos, alunos, meuAluno });
 });
 
 router.get("/treinos/novo", somenteGestor, (req, res) => {
-    res.render("treino-form", { treino: null });
+    res.render("treino-form", { treino: null, alunos: alunoRepo.listar() });
 });
 
 router.get("/treinos/editar/:id", somenteGestor, (req, res) => {
     const treino = treinoRepo.buscarPorId(String(req.params.id));
     if (!treino) return res.redirect("/treinos");
-    res.render("treino-form", { treino });
+    res.render("treino-form", { treino, alunos: alunoRepo.listar() });
 });
 
 router.post("/treinos/salvar", somenteGestor, (req, res) => {
     const { id, nome, categoria, duracao, descricao } = req.body;
+    const alunosIds = normalizarLista(req.body.alunosIds);
 
     if (id) {
-        treinoRepo.atualizar(id, nome, categoria, Number(duracao), descricao);
+        treinoRepo.atualizar(id, nome, categoria, Number(duracao), descricao, alunosIds);
         emitUpdate("treino_updated", { nome });
     } else {
-        treinoRepo.criar(nome, categoria, Number(duracao), descricao);
+        treinoRepo.criar(nome, categoria, Number(duracao), descricao, alunosIds);
         emitUpdate("treino_created", { nome });
     }
 

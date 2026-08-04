@@ -20,6 +20,13 @@
 
         </div>
 
+        <% if (usuario && usuario.tipo === 'Aluno' && !meuAluno) { %>
+            <p style="color: var(--text-muted);">
+                Sua conta ainda não está vinculada a um cadastro de aluno matriculado, então nenhum treino pode
+                ser exibido aqui. Peça para um professor ou administrador fazer o vínculo.
+            </p>
+        <% } %>
+
         <table class="table">
 
             <thead>
@@ -28,6 +35,9 @@
                     <th>Nome</th>
                     <th>Categoria</th>
                     <th>Duração</th>
+                    <% if (usuario && usuario.tipo !== 'Aluno') { %>
+                        <th>Atribuído a</th>
+                    <% } %>
                     <th>Ações</th>
                 </tr>
 
@@ -46,6 +56,20 @@
                             <td><span class="badge-categoria"><%= treino.categoria %></span></td>
 
                             <td><span class="treino-duracao"><%= treino.duracao %> min</span></td>
+
+                            <% if (usuario && usuario.tipo !== 'Aluno') { %>
+                                <td>
+                                    <% const idsAtribuidos = treino.alunosIds || []; %>
+                                    <% if (idsAtribuidos.length > 0) { %>
+                                        <span class="treino-duracao">
+                                            <%= idsAtribuidos.length %>
+                                            <%= idsAtribuidos.length === 1 ? 'aluno' : 'alunos' %>
+                                        </span>
+                                    <% } else { %>
+                                        <span class="treino-duracao">Ninguém ainda</span>
+                                    <% } %>
+                                </td>
+                            <% } %>
 
                             <td>
 
@@ -71,8 +95,12 @@
 
                     <tr>
 
-                        <td colspan="4">
-                            Nenhum treino cadastrado.
+                        <td colspan="<%= usuario && usuario.tipo !== 'Aluno' ? 5 : 4 %>">
+                            <% if (usuario && usuario.tipo === 'Aluno' && meuAluno) { %>
+                                Nenhum treino foi atribuído a você ainda.
+                            <% } else { %>
+                                Nenhum treino cadastrado.
+                            <% } %>
                         </td>
 
                     </tr>

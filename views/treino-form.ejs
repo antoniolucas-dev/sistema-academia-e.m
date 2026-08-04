@@ -1,4 +1,4 @@
-<%- include("partials/header", { titulo: "Cadastro de Treino" }) %>
+<%- include("partials/header", { titulo: treino ? "Editar Treino" : "Cadastro de Treino" }) %>
 
 <%- include("partials/navbar") %>
 
@@ -8,7 +8,7 @@
 
     <main class="content">
 
-        <h1>Cadastro de Treino</h1>
+        <h1><%= treino ? "Editar Treino" : "Cadastro de Treino" %></h1>
 
         <form
             action="/treinos/salvar"
@@ -16,24 +16,46 @@
             class="form"
         >
 
+            <% if (treino) { %>
+                <input type="hidden" name="id" value="<%= treino.id %>">
+            <% } %>
+
             <input
                 type="text"
                 name="nome"
                 placeholder="Nome do treino"
+                value="<%= treino ? treino.nome : '' %>"
                 required
             >
 
-            <input
-                type="text"
-                name="categoria"
-                placeholder="Categoria"
-                required
-            >
+            <% const categoriasPreDefinidas = ["Jiu-Jitsu", "Muay Thai", "Boxe", "Judô", "Musculação", "Funcional", "Cardio", "Alongamento"]; %>
+            <% const categoriaEhPreDefinida = treino && categoriasPreDefinidas.includes(treino.categoria); %>
+            <% const categoriaEhOutra = treino && treino.categoria && !categoriaEhPreDefinida; %>
+
+            <label for="categoria-select">Categoria</label>
+            <select id="categoria-select" name="categoria" required>
+                <option value="" disabled <%= !treino ? 'selected' : '' %>>Selecione uma categoria</option>
+                <% categoriasPreDefinidas.forEach(c => { %>
+                    <option value="<%= c %>" <%= treino && treino.categoria === c ? 'selected' : '' %>><%= c %></option>
+                <% }) %>
+                <option value="__outro__" <%= categoriaEhOutra ? 'selected' : '' %>>Outro (especificar)</option>
+            </select>
+
+             <input
+              type="text"
+             id="categoria-outro"
+             name="categoria"
+             placeholder="Digite a categoria"
+             value="<%= categoriaEhOutra ? treino.categoria : '' %>"
+              <% if (!categoriaEhOutra) { %> style="display: none;" <% } %>
+>
+
 
             <input
                 type="number"
                 name="duracao"
                 placeholder="Duração (minutos)"
+                value="<%= treino ? treino.duracao : '' %>"
                 required
             >
 
@@ -41,13 +63,37 @@
                 name="descricao"
                 placeholder="Descrição do treino"
                 rows="5"
-            ></textarea>
+            ><%= treino ? treino.descricao : '' %></textarea>
+
+            <label>Atribuir a quais alunos?</label>
+            <% if (alunos && alunos.length > 0) { %>
+                <div class="checkbox-lista">
+                    <% alunos.forEach(a => { %>
+                        <label class="checkbox-item">
+                            <input
+                                type="checkbox"
+                                name="alunosIds"
+                                value="<%= a.id %>"
+                                <%= treino && (treino.alunosIds || []).includes(a.id) ? 'checked' : '' %>
+                            >
+                            <%= a.nome %>
+                        </label>
+                    <% }) %>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: -0.5rem;">
+                    Deixe todos desmarcados pra não atribuir esse treino a nenhum aluno específico ainda.
+                </p>
+            <% } else { %>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">
+                    Nenhum aluno cadastrado ainda. Cadastre alunos na área "Alunos" pra poder atribuir treinos a eles.
+                </p>
+            <% } %>
 
             <button
                 type="submit"
                 class="btn"
             >
-                Salvar
+                <%= treino ? "Atualizar" : "Salvar" %>
             </button>
 
         </form>
@@ -55,5 +101,28 @@
     </main>
 
 </div>
+
+<script>
+    const categoriaSelect = document.getElementById('categoria-select');
+    const categoriaOutro = document.getElementById('categoria-outro');
+
+    function alternarCampoCategoria() {
+        const escolheuOutro = categoriaSelect.value === '__outro__';
+        categoriaOutro.style.display = escolheuOutro ? 'block' : 'none';
+        categoriaOutro.required = escolheuOutro;
+        categoriaOutro.disabled = !escolheuOutro;
+    }
+
+    categoriaSelect.addEventListener('change', alternarCampoCategoria);
+    alternarCampoCategoria();
+
+    // No envio, evita mandar os dois campos "categoria" ao mesmo tempo:
+    // se escolheu "Outro", desativa o select; senão, mantém o texto desativado.
+    document.querySelector('.form').addEventListener('submit', () => {
+        const escolheuOutro = categoriaSelect.value === '__outro__';
+        categoriaSelect.disabled = escolheuOutro;
+        categoriaOutro.disabled = !escolheuOutro;
+    });
+</script>
 
 <%- include("partials/footer") %>
