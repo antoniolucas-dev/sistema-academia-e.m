@@ -39,21 +39,23 @@
 
                         <tr>
 
-                            <td><%= treino.nome %></td>
+                            <td class="aluno-nome"><%= treino.nome %></td>
 
-                            <td><%= treino.categoria %></td>
+                            <td><span class="badge-categoria"><%= treino.categoria %></span></td>
 
-                            <td><%= treino.duracao %></td>
+                            <td><span class="treino-duracao"><%= treino.duracao %> min</span></td>
 
                             <td>
 
-                                <a href="/treinos/editar/<%= treino.id %>" class="btn-edit">
-                                    Editar
-                                </a>
+                                <div class="acoes-container">
+                                    <a href="/treinos/editar/<%= treino.id %>" class="btn-edit">
+                                        Editar
+                                    </a>
 
-                                <a href="/treinos/excluir/<%= treino.id %>" class="btn-delete">
-                                    Excluir
-                                </a>
+                                    <a href="/treinos/excluir/<%= treino.id %>" class="btn-delete">
+                                        Excluir
+                                    </a>
+                                </div>
 
                             </td>
 

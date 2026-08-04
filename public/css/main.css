@@ -1,57 +1,423 @@
+/* ============================================================
+   ACADEMIA E.M — Design System
+   Base: variáveis, reset, tipografia, layout e componentes-base.
+   Os demais arquivos CSS (components, dashboard, alunos, etc.)
+   usam estas variáveis para manter tudo consistente.
+   ============================================================ */
+
 :root {
-    --primary: #e11d48; /* Vermelho premium */
-    --primary-hover: #be123c;
-    --bg-dark: #0a0a0a;
-    --bg-sidebar: #121212;
-    --bg-card: #171717;
-    --text-main: #fafafa;
-    --text-muted: #737373;
-    --border: rgba(255, 255, 255, 0.08);
-    --sidebar-width: 280px;
-    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  /* Sidebar Estilizada */
-  .sidebar {
-    width: var(--sidebar-width);
-    background: var(--bg-sidebar);
-    border-right: 1px solid var(--border);
-    padding: 80px 1.25rem 2rem;
-  }
-  
-  .sidebar a {
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    color: var(--text-muted);
-    transition: var(--transition);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .sidebar a:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.03);
-  }
-  
-  .sidebar a.active {
-    background: rgba(225, 29, 72, 0.08);
-    color: var(--primary);
-    box-shadow: inset 3px 0 0 var(--primary);
-  }
-  
-  /* Tabelas Premium */
-  .table-container {
-    background: var(--bg-card);
-    border-radius: 16px;
-    border: 1px solid var(--border);
-  }
-  
-  .table th {
-    background: rgba(255, 255, 255, 0.02);
-    color: var(--text-muted);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
+  --primary: #e11d48; /* Vermelho premium */
+  --primary-hover: #be123c;
+  --primary-soft: rgba(225, 29, 72, 0.12);
+
+  --bg-dark: #0a0a0a;
+  --bg-sidebar: #121212;
+  --bg-card: #171717;
+  --bg-input: #1c1c1c;
+
+  --text-main: #fafafa;
+  --text-muted: #a1a1aa;
+  --text-faint: #6b6b70;
+
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+
+  --success: #22c55e;
+  --success-soft: rgba(34, 197, 94, 0.12);
+  --danger: #ef4444;
+  --danger-soft: rgba(239, 68, 68, 0.12);
+  --info: #38bdf8;
+  --info-soft: rgba(56, 189, 248, 0.12);
+
+  --sidebar-width: 260px;
+  --navbar-height: 68px;
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --font-principal: "Poppins", "Segoe UI", sans-serif;
+}
+
+/* ---------- Reset ---------- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-principal);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 0.5em;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0 0 1em;
+  color: var(--text-muted);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+::selection {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Scrollbar discreta */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a3a;
+}
+
+/* ---------- Layout principal (navbar + sidebar + conteúdo) ---------- */
+.container {
+  display: flex;
+  align-items: flex-start;
+  min-height: calc(100vh - var(--navbar-height));
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  padding: 2.5rem clamp(1.25rem, 3vw, 3rem);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 1.75rem;
+  margin: 0 0 0.2rem;
+}
+
+.page-header p {
+  margin: 0;
+}
+
+/* ---------- Botões ---------- */
+.btn,
+button[type="submit"],
+.hero .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--transition);
+  box-shadow: 0 4px 14px rgba(225, 29, 72, 0.25);
+}
+
+.btn:hover,
+button[type="submit"]:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(225, 29, 72, 0.35);
+}
+
+.btn:active,
+button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+.btn-edit,
+.btn-delete {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.btn-edit {
+  background: var(--info-soft);
+  color: var(--info);
+}
+
+.btn-edit:hover {
+  background: var(--info);
+  color: #071522;
+}
+
+.btn-delete {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.btn-delete:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+/* ---------- Formulários ---------- */
+.form,
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  max-width: 520px;
+}
+
+.form label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: -0.6rem;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: var(--transition);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-faint);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+select {
+  cursor: pointer;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+    linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 20px) center, calc(100% - 15px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+/* ---------- Tabelas ---------- */
+.table-container {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+table.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.table thead {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.table th {
+  text-align: left;
+  padding: 1rem 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-main);
+  font-size: 0.92rem;
+  vertical-align: middle;
+}
+
+.table tbody tr {
+  transition: var(--transition);
+}
+
+.table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table td[colspan] {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--text-faint);
+}
+
+/* Badge usado para faixa, grupo muscular, categoria, etc. */
+.badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  background: var(--primary-soft);
+  color: var(--primary);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-card);
+  transition: var(--transition);
+}
+
+.card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+.card h3 {
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}
+
+.card a {
+  font-weight: 600;
+}
+
+/* ---------- Alertas ---------- */
+.alerta {
+  padding: 0.85rem 1.1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid transparent;
+}
+
+.alerta-erro {
+  background: var(--danger-soft);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.alerta-sucesso {
+  background: var(--success-soft);
+  color: #86efac;
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+/* ---------- Estado vazio ---------- */
+.estado-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.estado-vazio-icone {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--text-faint);
+}
+
+.estado-vazio-titulo {
+  color: var(--text-main);
+  margin-bottom: 0.4rem;
+}
+
+/* ---------- Página de erro ---------- */
+.erro {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  gap: 0.5rem;
+}
+
+.erro h1 {
+  font-size: 5rem;
+  color: var(--primary);
+  margin-bottom: 0;
+}
+
+.erro h2 {
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-bottom: 1.5rem;
+}

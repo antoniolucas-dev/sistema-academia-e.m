@@ -1,47 +1,36 @@
-.info-page{
-    padding: 60px 20px;
-    text-align: center;
+/* ============================================================
+   Página de Informações institucionais
+   ============================================================ */
+
+.info-linha {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.6rem;
 }
 
-.info-page h1{
-    font-size: 40px;
-    color: #d40000;
+.info-linha:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
-.info-subtitulo{
-    font-size: 18px;
-    color: #555;
-    margin-bottom: 40px;
+.info-linha span:first-child {
+  color: var(--text-muted);
 }
 
-.info-grid{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 24px;
-    max-width: 1000px;
-    margin: 0 auto;
-    text-align: left;
+.info-linha span:last-child {
+  color: var(--text-main);
+  font-weight: 600;
 }
 
-.info-card{
-    background-color: #f8f8f8;
-    border-radius: 10px;
-    padding: 24px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+.card-icone-titulo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 1rem;
 }
 
-.info-card h2{
-    font-size: 20px;
-    color: #d40000;
-    margin-bottom: 12px;
-}
-
-.info-card ul{
-    list-style: none;
-    padding: 0;
-}
-
-.info-card li{
-    padding: 4px 0;
-    color: #333;
+.card-icone-titulo i {
+  color: var(--primary);
+  font-size: 1.2rem;
 }

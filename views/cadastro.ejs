@@ -1,61 +1,51 @@
-<%- include("partials/header", { titulo: "Cadastro de Usuário" }) %>
+<%- include("partials/header", { titulo: "Criar Conta" }) %>
 
-<%- include("partials/navbar") %>
+<div class="login-container">
 
-<div class="container">
+    <form action="/auth/register" method="POST" class="login-form">
 
-    <%- include("partials/sidebar") %>
+        <h2>Criar Conta</h2>
 
-    <main class="content">
+        <% if (typeof erro !== 'undefined' && erro) { %>
+            <div class="alerta alerta-erro"><%= erro %></div>
+        <% } %>
 
-        <h1>Criar Conta</h1>
+        <input
+            type="text"
+            name="nome"
+            placeholder="Nome completo"
+            required
+        >
 
-        <form action="/auth/cadastro" method="POST" class="form">
+        <input
+            type="email"
+            name="email"
+            placeholder="Digite seu e-mail"
+            required
+        >
 
-            <label for="nome">Nome</label>
-            <input
-                type="text"
-                id="nome"
-                name="nome"
-                placeholder="Nome completo"
-                required
-            >
+        <input
+            type="password"
+            name="senha"
+            placeholder="Digite sua senha (mín. 6 caracteres)"
+            required
+        >
 
-            <label for="email">E-mail</label>
-            <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Digite seu e-mail"
-                required
-            >
+        <select name="tipo">
+            <option value="Administrador">Administrador</option>
+            <option value="Professor">Professor</option>
+            <option value="Aluno">Aluno</option>
+        </select>
 
-            <label for="senha">Senha</label>
-            <input
-                type="password"
-                id="senha"
-                name="senha"
-                placeholder="Digite sua senha"
-                required
-            >
+        <button type="submit">
+            Cadastrar
+        </button>
 
-            <label for="tipo">Tipo de Usuário</label>
+        <p class="login-form-rodape">
+            Já tem conta? <a href="/login">Entrar</a>
+        </p>
 
-            <select id="tipo" name="tipo">
-
-                <option value="Administrador">Administrador</option>
-                <option value="Professor">Professor</option>
-                <option value="Aluno">Aluno</option>
-
-            </select>
-
-            <button class="btn" type="submit">
-                Cadastrar
-            </button>
-
-        </form>
-
-    </main>
+    </form>
 
 </div>
 

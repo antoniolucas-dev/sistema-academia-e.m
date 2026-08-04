@@ -1,5 +1,13 @@
-.page-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+/* ============================================================
+   Exercícios
+   ============================================================ */
+
+.badge-grupo {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--success-soft);
+  color: var(--success);
 }

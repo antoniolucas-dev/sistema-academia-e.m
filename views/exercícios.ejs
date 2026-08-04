@@ -40,20 +40,22 @@
 
                     <tr>
 
-                        <td><%= exercicio.nome %></td>
-                        <td><%= exercicio.grupoMuscular %></td>
+                        <td class="aluno-nome"><%= exercicio.nome %></td>
+                        <td><span class="badge-grupo"><%= exercicio.grupoMuscular %></span></td>
                         <td><%= exercicio.series %></td>
                         <td><%= exercicio.repeticoes %></td>
 
                         <td>
 
-                            <a href="/exercicios/editar/<%= exercicio.id %>" class="btn-edit">
-                                Editar
-                            </a>
+                            <div class="acoes-container">
+                                <a href="/exercicios/editar/<%= exercicio.id %>" class="btn-edit">
+                                    Editar
+                                </a>
 
-                            <a href="/exercicios/excluir/<%= exercicio.id %>" class="btn-delete">
-                                Excluir
-                            </a>
+                                <a href="/exercicios/excluir/<%= exercicio.id %>" class="btn-delete">
+                                    Excluir
+                                </a>
+                            </div>
 
                         </td>
 

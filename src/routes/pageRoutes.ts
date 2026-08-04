@@ -12,7 +12,17 @@ const exercicioRepo = new ExercicioRepository();
 // --- PÁGINAS PRINCIPAIS ---
 
 router.get("/", (req, res) => res.render("index"));
-router.get("/login", (req, res) => res.render("login"));
+router.get("/login", (req, res) => {
+    res.render("login", {
+        erro: req.query.erro || null,
+        sucesso: req.query.sucesso || null
+    });
+});
+router.get("/cadastro", (req, res) => {
+    res.render("cadastro", {
+        erro: req.query.erro || null
+    });
+});
 router.get("/dashboard", (req, res) => res.render("dashboard"));
 router.get("/informacoes", (req, res) => res.render("imformacoes"));
 router.get("/perfil", (req, res) => {

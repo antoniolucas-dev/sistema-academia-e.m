@@ -1,11 +1,26 @@
-.perfil-card{
-    background:white;
-    padding:30px;
-    border-radius:10px;
-    max-width:500px;
-    box-shadow:0 2px 10px rgba(0,0,0,.1);
+/* ============================================================
+   Perfil
+   ============================================================ */
+
+.perfil-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 2rem;
+  border-radius: var(--radius);
+  max-width: 480px;
+  box-shadow: var(--shadow-card);
 }
 
-.perfil-card h2{
-    margin-bottom:20px;
+.perfil-card h2 {
+  margin-bottom: 1.25rem;
+  font-size: 1.35rem;
+}
+
+.perfil-card p {
+  margin-bottom: 0.6rem;
+  color: var(--text-muted);
+}
+
+.perfil-card strong {
+  color: var(--text-main);
 }

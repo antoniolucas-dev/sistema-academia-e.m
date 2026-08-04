@@ -1,38 +1,52 @@
-.hero{
-    height:90vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url("/img/musculação.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    padding: 0 20px;
+/* ============================================================
+   Página inicial (hero)
+   ============================================================ */
+
+.hero {
+  min-height: calc(100vh - var(--navbar-height));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-image: linear-gradient(rgba(5, 5, 5, 0.65), rgba(5, 5, 5, 0.88)),
+    url("/img/musculação.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 0 20px;
 }
 
-.hero h1{
-    font-size:50px;
-    color:#ffffff;
+.hero h1 {
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  max-width: 900px;
 }
 
-.hero p{
-    margin:20px 0;
-    font-size:20px;
-    color:#f0f0f0;
+.hero h1 span {
+  color: var(--primary);
 }
 
-.hero .btn{
-    background-color:#d40000;
-    color:#ffffff;
-    padding:12px 32px;
-    border-radius:6px;
-    text-decoration:none;
-    font-weight:bold;
-    transition: background-color 0.2s ease;
+.hero p {
+  margin: 1.25rem 0 2rem;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: #e5e5e5;
+  max-width: 560px;
 }
 
-.hero .btn:hover{
-    background-color:#a80000;
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero .btn {
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
