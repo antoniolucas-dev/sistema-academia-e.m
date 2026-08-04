@@ -5,26 +5,31 @@ describe("Treino", () => {
     const treino: Treino = {
       id: "1",
       nome: "Treino A",
-      alunoId: "10",
-      exercicios: ["Flexão", "Agachamento"]
+      categoria: "Hipertrofia",
+      duracao: 60,
+      descricao: "Treino focado em peito e tríceps"
     };
 
     expect(treino.id).toBe("1");
     expect(treino.nome).toBe("Treino A");
-    expect(treino.alunoId).toBe("10");
-    expect(treino.exercicios.length).toBe(2);
+    expect(treino.categoria).toBe("Hipertrofia");
+    expect(treino.duracao).toBe(60);
+    expect(treino.descricao).toBe("Treino focado em peito e tríceps");
   });
 
-  test("deve adicionar exercício", () => {
+  test("deve permitir alterar os dados", () => {
     const treino: Treino = {
       id: "1",
       nome: "Treino B",
-      alunoId: "5",
-      exercicios: []
+      categoria: "Cardio",
+      duracao: 30,
+      descricao: "Corrida na esteira"
     };
 
-    treino.exercicios.push("Supino");
+    treino.nome = "Treino C";
+    treino.duracao = 45;
 
-    expect(treino.exercicios).toContain("Supino");
+    expect(treino.nome).toBe("Treino C");
+    expect(treino.duracao).toBe(45);
   });
 });

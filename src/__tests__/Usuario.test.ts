@@ -4,27 +4,24 @@ describe("Usuario", () => {
   test("deve criar um usuário corretamente", () => {
     const usuario = new Usuario(
       "1",
-      "Erick",
-      "erick@email.com",
-      "123456"
+      "Alice",
+      "alice@example.com",
+      "senha123"
     );
 
     expect(usuario.id).toBe("1");
-    expect(usuario.nome).toBe("Erick");
-    expect(usuario.email).toBe("erick@email.com");
-    expect(usuario.senha).toBe("123456");
+    expect(usuario.nome).toBe("Alice");
+    expect(usuario.email).toBe("alice@example.com");
+    expect(usuario.senha).toBe("senha123");
   });
 
-  test("deve alterar o nome do usuário", () => {
-    const usuario = new Usuario(
-      "1",
-      "João",
-      "joao@email.com",
-      "123"
-    );
+  test("deve permitir alterar os dados", () => {
+    const usuario = new Usuario("1", "Bob", "bob@example.com", "password");
 
-    usuario.nome = "Maria";
+    usuario.nome = "Carlos";
+    usuario.email = "carlos@example.com";
 
-    expect(usuario.nome).toBe("Maria");
+    expect(usuario.nome).toBe("Carlos");
+    expect(usuario.email).toBe("carlos@example.com");
   });
 });
