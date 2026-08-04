@@ -21,12 +21,13 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const { nome, alunoId, exercicios } = req.body;
+  const { nome, categoria, duracao, descricao } = req.body;
 
   const treino = repository.criar(
     nome,
-    alunoId,
-    exercicios
+    categoria,
+    Number(duracao),
+    descricao
   );
 
   res.status(201).json(treino);

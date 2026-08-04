@@ -1,24 +1,29 @@
 import Usuario from "../entities/Usuario";
-export class UsuarioRepository {
-  private usuarios: Usuario[] = [];
+import { lerArquivo, salvarArquivo } from "../utils/jsonHelper";
+import { gerarId } from "../utils/idGenerator";
 
+const ARQUIVO = "dados/usuarios.json";
+
+export class UsuarioRepository {
   listar(): Usuario[] {
-    return this.usuarios;
+    return lerArquivo(ARQUIVO);
   }
 
   buscarPorEmail(email: string): Usuario | undefined {
-    return this.usuarios.find(usuario => usuario.email === email);
+    return this.listar().find(usuario => usuario.email === email);
   }
 
   criar(nome: string, email: string, senha: string): Usuario {
     const novoUsuario: Usuario = {
-      id: Date.now().toString(),
+      id: gerarId(),
       nome,
       email,
       senha
     };
 
-    this.usuarios.push(novoUsuario);
+    const usuarios = this.listar();
+    usuarios.push(novoUsuario);
+    salvarArquivo(ARQUIVO, usuarios);
     return novoUsuario;
   }
 }

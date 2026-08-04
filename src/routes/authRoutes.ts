@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { UsuarioRepository } from "../models/UsuarioRepository";
+import { validarEmail, validarSenha, validarNome } from "../utils/validators";
 
 const router = Router();
 const repository = new UsuarioRepository();
@@ -31,17 +32,25 @@ router.post("/login", (req, res) => {
 router.post("/register", (req, res) => {
   const { nome, email, senha } = req.body;
 
+  if (!validarNome(nome)) {
+    return res.status(400).json({ mensagem: "Nome inválido" });
+  }
+
+  if (!validarEmail(email)) {
+    return res.status(400).json({ mensagem: "E-mail inválido" });
+  }
+
+  if (!validarSenha(senha)) {
+    return res.status(400).json({ mensagem: "Senha deve ter pelo menos 6 caracteres" });
+  }
+
   if (repository.buscarPorEmail(email)) {
     return res.status(400).json({
       mensagem: "E-mail já cadastrado"
     });
   }
 
-  const usuario = repository.criar(
-    nome,
-    email,
-    senha
-  );
+  const usuario = repository.criar(nome, email, senha);
 
   res.status(201).json(usuario);
 });
