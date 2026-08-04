@@ -21,6 +21,21 @@
                     <option value="<%= f %>" <%= aluno && aluno.faixa === f ? 'selected' : '' %>><%= f %></option>
                 <% }) %>
             </select>
+
+            <label for="usuarioId">Vincular a uma conta de login (opcional)</label>
+            <select id="usuarioId" name="usuarioId">
+                <option value="">Nenhuma conta vinculada</option>
+                <% contas.forEach(c => { %>
+                    <option value="<%= c.id %>" <%= aluno && aluno.usuarioId === c.id ? 'selected' : '' %>>
+                        <%= c.nome %> (<%= c.email %>)
+                    </option>
+                <% }) %>
+            </select>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: -0.5rem;">
+                Vincular permite que o próprio aluno veja sua faixa e telefone na área "Meu Perfil".
+                Só aparecem aqui contas do tipo Aluno ainda não vinculadas a outro cadastro.
+            </p>
+
             <button class="btn" type="submit"><%= aluno ? "Atualizar Aluno" : "Salvar Aluno" %></button>
         </form>
     </main>

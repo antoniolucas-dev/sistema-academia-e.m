@@ -30,7 +30,9 @@ router.get("/cadastro", (req, res) => {
 router.get("/dashboard", somenteLogado, (req, res) => res.render("dashboard"));
 router.get("/informacoes", (req, res) => res.render("imformacoes"));
 router.get("/perfil", somenteLogado, (req, res) => {
-    res.render("perfil", { usuario: req.session.usuario });
+    const usuario = req.session.usuario!;
+    const meuAluno = usuario.tipo === "Aluno" ? alunoRepo.buscarPorUsuarioId(usuario.id) : null;
+    res.render("perfil", { usuario, meuAluno });
 });
 
 router.get("/perfil/editar", somenteLogado, (req, res) => {
@@ -76,29 +78,45 @@ router.get("/api/stats", (req, res) => {
 
 // --- GESTÃO DE ALUNOS ---
 
+// Lista contas de login do tipo "Aluno" que ainda podem ser vinculadas a um cadastro de matrícula
+// (exclui as que já estão vinculadas a outro aluno, mas mantém a que já pertence a `alunoAtualId`)
+function contasDisponiveisParaVinculo(alunoAtualId?: string) {
+    const alunos = alunoRepo.listar();
+    const idsVinculados = new Set(
+        alunos
+            .filter(a => a.usuarioId && a.id !== alunoAtualId)
+            .map(a => a.usuarioId)
+    );
+
+    return usuarioRepo
+        .listar()
+        .filter(u => u.tipo === "Aluno" && !idsVinculados.has(u.id));
+}
+
 router.get("/alunos", somenteGestor, (req, res) => {
     const alunos = alunoRepo.listar();
     res.render("alunos", { alunos });
 });
 
 router.get("/alunos/novo", somenteGestor, (req, res) => {
-    res.render("aluno-form", { aluno: null });
+    res.render("aluno-form", { aluno: null, contas: contasDisponiveisParaVinculo() });
 });
 
 router.get("/alunos/editar/:id", somenteGestor, (req, res) => {
     const aluno = alunoRepo.buscar(String(req.params.id));
     if (!aluno) return res.redirect("/alunos");
-    res.render("aluno-form", { aluno });
+    res.render("aluno-form", { aluno, contas: contasDisponiveisParaVinculo(aluno.id) });
 });
 
 router.post("/alunos/salvar", somenteGestor, (req, res) => {
-    const { id, nome, email, telefone, faixa } = req.body;
+    const { id, nome, email, telefone, faixa, usuarioId } = req.body;
+    const vinculo = usuarioId || undefined;
 
     if (id) {
-        alunoRepo.atualizar(id, nome, email, telefone, faixa);
+        alunoRepo.atualizar(id, nome, email, telefone, faixa, vinculo);
         emitUpdate("aluno_updated", { nome });
     } else {
-        alunoRepo.criar(nome, email, telefone, faixa);
+        alunoRepo.criar(nome, email, telefone, faixa, vinculo);
         emitUpdate("aluno_created", { nome });
     }
 

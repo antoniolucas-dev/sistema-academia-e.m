@@ -20,6 +20,29 @@
 
         </div>
 
+        <% if (usuario.tipo === 'Aluno') { %>
+            <div class="perfil-card" style="margin-top: 1.5rem;">
+
+                <h2>Minha matrícula</h2>
+
+                <% if (meuAluno) { %>
+
+                    <p><strong>Faixa:</strong> <span class="badge-faixa"><%= meuAluno.faixa %></span></p>
+
+                    <p><strong>Telefone cadastrado:</strong> <%= meuAluno.telefone %></p>
+
+                <% } else { %>
+
+                    <p>
+                        Sua conta ainda não está vinculada a um cadastro de aluno matriculado.
+                        Peça para um professor ou administrador fazer o vínculo na área de Alunos.
+                    </p>
+
+                <% } %>
+
+            </div>
+        <% } %>
+
     </main>
 
 </div>
