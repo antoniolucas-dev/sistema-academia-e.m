@@ -16,3 +16,8 @@ export function validarEmail(
   ): boolean {
     return nome.trim().length > 0;
   }
+  export function validarTipo(
+    tipo: string
+  ): boolean {
+    return ["Administrador", "Professor", "Aluno"].includes(tipo);
+  }

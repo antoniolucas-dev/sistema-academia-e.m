@@ -15,9 +15,11 @@
                 <p>Gerencie os alunos matriculados na academia.</p>
             </div>
 
-            <a href="/alunos/novo" class="btn">
-                Novo Aluno
-            </a>
+            <% if (usuario && usuario.tipo !== 'Aluno') { %>
+                <a href="/alunos/novo" class="btn">
+                    Novo Aluno
+                </a>
+            <% } %>
 
         </div>
 
@@ -61,15 +63,17 @@
                             </td>
 
                             <td>
-                                <div class="acoes-container">
-                                    <a href="/alunos/editar/<%= aluno.id %>" class="btn-edit">
-                                        Editar
-                                    </a>
+                                <% if (usuario && usuario.tipo !== 'Aluno') { %>
+                                    <div class="acoes-container">
+                                        <a href="/alunos/editar/<%= aluno.id %>" class="btn-edit">
+                                            Editar
+                                        </a>
 
-                                    <a href="/alunos/excluir/<%= aluno.id %>" class="btn-delete">
-                                        Excluir
-                                    </a>
-                                </div>
+                                        <a href="/alunos/excluir/<%= aluno.id %>" class="btn-delete">
+                                            Excluir
+                                        </a>
+                                    </div>
+                                <% } %>
                             </td>
 
                         </tr>

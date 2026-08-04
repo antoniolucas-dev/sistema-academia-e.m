@@ -1,5 +1,7 @@
+/// <reference path="./types/session.d.ts" />
 import express from 'express';
 import path from 'path';
+import session from 'express-session';
 
 import apiRoutes from './routes/apiRoutes';
 import authRoutes from './routes/authRoutes';
@@ -15,6 +17,19 @@ app.set('views', path.join(process.cwd(), 'views'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'academia-em-secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 * 8 } // 8 horas
+}));
+
+// Deixa o usuário logado disponível em todas as views (ex: <% if (usuario.tipo === 'Aluno') %>)
+app.use((req, res, next) => {
+    res.locals.usuario = req.session.usuario || null;
+    next();
+});
 
 app.use(express.static(path.join(__dirname, '../public')));
 

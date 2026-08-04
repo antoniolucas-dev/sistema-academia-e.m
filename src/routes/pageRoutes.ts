@@ -2,12 +2,16 @@ import { Router } from "express";
 import { AlunoRepository } from "../models/AlunoRepository";
 import { TreinoRepository } from "../models/TreinoRepository";
 import { ExercicioRepository } from "../models/ExercicioRepository";
+import { UsuarioRepository } from "../models/UsuarioRepository";
 import { emitUpdate } from "../socket";
+import { somenteLogado, somenteGestor } from "../middlewares/auth";
+import uploadPerfil from "../middlewares/uploadPerfil";
 
 const router = Router();
 const alunoRepo = new AlunoRepository();
 const treinoRepo = new TreinoRepository();
 const exercicioRepo = new ExercicioRepository();
+const usuarioRepo = new UsuarioRepository();
 
 // --- PÁGINAS PRINCIPAIS ---
 
@@ -23,16 +27,42 @@ router.get("/cadastro", (req, res) => {
         erro: req.query.erro || null
     });
 });
-router.get("/dashboard", (req, res) => res.render("dashboard"));
+router.get("/dashboard", somenteLogado, (req, res) => res.render("dashboard"));
 router.get("/informacoes", (req, res) => res.render("imformacoes"));
-router.get("/perfil", (req, res) => {
-    // Mock de usuário para a página de perfil
-    const usuario = {
-        nome: "Administrador",
-        email: "admin@academiaem.com",
-        tipo: "Instrutor"
-    };
-    res.render("perfil", { usuario });
+router.get("/perfil", somenteLogado, (req, res) => {
+    res.render("perfil", { usuario: req.session.usuario });
+});
+
+router.get("/perfil/editar", somenteLogado, (req, res) => {
+    res.render("perfil-form", { usuario: req.session.usuario, erro: req.query.erro || null });
+});
+
+router.post("/perfil/salvar", somenteLogado, (req, res) => {
+    uploadPerfil.single("foto")(req, res, (err) => {
+        if (err) {
+            return res.redirect("/perfil/editar?erro=" + encodeURIComponent(err.message));
+        }
+
+        const usuarioLogado = req.session.usuario!;
+        const { nome, telefone } = req.body;
+        const foto = req.file ? "/uploads/perfil/" + req.file.filename : undefined;
+
+        const usuarioAtualizado = usuarioRepo.atualizarPerfil(usuarioLogado.id, nome, telefone, foto);
+
+        if (usuarioAtualizado) {
+            // Mantém a sessão sincronizada com os novos dados (sem a senha)
+            req.session.usuario = {
+                id: usuarioAtualizado.id,
+                nome: usuarioAtualizado.nome,
+                email: usuarioAtualizado.email,
+                tipo: usuarioAtualizado.tipo,
+                telefone: usuarioAtualizado.telefone,
+                foto: usuarioAtualizado.foto
+            };
+        }
+
+        res.redirect("/perfil");
+    });
 });
 
 // API para o Dashboard atualizar os números em tempo real
@@ -46,22 +76,22 @@ router.get("/api/stats", (req, res) => {
 
 // --- GESTÃO DE ALUNOS ---
 
-router.get("/alunos", (req, res) => {
+router.get("/alunos", somenteGestor, (req, res) => {
     const alunos = alunoRepo.listar();
     res.render("alunos", { alunos });
 });
 
-router.get("/alunos/novo", (req, res) => {
+router.get("/alunos/novo", somenteGestor, (req, res) => {
     res.render("aluno-form", { aluno: null });
 });
 
-router.get("/alunos/editar/:id", (req, res) => {
-    const aluno = alunoRepo.buscar(req.params.id);
+router.get("/alunos/editar/:id", somenteGestor, (req, res) => {
+    const aluno = alunoRepo.buscar(String(req.params.id));
     if (!aluno) return res.redirect("/alunos");
     res.render("aluno-form", { aluno });
 });
 
-router.post("/alunos/salvar", (req, res) => {
+router.post("/alunos/salvar", somenteGestor, (req, res) => {
     const { id, nome, email, telefone, faixa } = req.body;
 
     if (id) {
@@ -75,30 +105,31 @@ router.post("/alunos/salvar", (req, res) => {
     res.redirect("/alunos");
 });
 
-router.get("/alunos/excluir/:id", (req, res) => {
-    alunoRepo.remover(req.params.id);
-    emitUpdate("aluno_deleted", { id: req.params.id });
+router.get("/alunos/excluir/:id", somenteGestor, (req, res) => {
+    const id = String(req.params.id);
+    alunoRepo.remover(id);
+    emitUpdate("aluno_deleted", { id });
     res.redirect("/alunos");
 });
 
 // --- GESTÃO DE TREINOS ---
 
-router.get("/treinos", (req, res) => {
+router.get("/treinos", somenteLogado, (req, res) => {
     const treinos = treinoRepo.listar();
     res.render("treinos", { treinos });
 });
 
-router.get("/treinos/novo", (req, res) => {
+router.get("/treinos/novo", somenteGestor, (req, res) => {
     res.render("treino-form", { treino: null });
 });
 
-router.get("/treinos/editar/:id", (req, res) => {
-    const treino = treinoRepo.buscarPorId(req.params.id);
+router.get("/treinos/editar/:id", somenteGestor, (req, res) => {
+    const treino = treinoRepo.buscarPorId(String(req.params.id));
     if (!treino) return res.redirect("/treinos");
     res.render("treino-form", { treino });
 });
 
-router.post("/treinos/salvar", (req, res) => {
+router.post("/treinos/salvar", somenteGestor, (req, res) => {
     const { id, nome, categoria, duracao, descricao } = req.body;
 
     if (id) {
@@ -112,30 +143,31 @@ router.post("/treinos/salvar", (req, res) => {
     res.redirect("/treinos");
 });
 
-router.get("/treinos/excluir/:id", (req, res) => {
-    treinoRepo.remover(req.params.id);
-    emitUpdate("treino_deleted", { id: req.params.id });
+router.get("/treinos/excluir/:id", somenteGestor, (req, res) => {
+    const id = String(req.params.id);
+    treinoRepo.remover(id);
+    emitUpdate("treino_deleted", { id });
     res.redirect("/treinos");
 });
 
 // --- GESTÃO DE EXERCÍCIOS ---
 
-router.get("/exercicios", (req, res) => {
+router.get("/exercicios", somenteLogado, (req, res) => {
     const exercicios = exercicioRepo.listar();
     res.render("exercícios", { exercicios });
 });
 
-router.get("/exercicios/novo", (req, res) => {
+router.get("/exercicios/novo", somenteGestor, (req, res) => {
     res.render("exercício-form", { exercicio: null });
 });
 
-router.get("/exercicios/editar/:id", (req, res) => {
-    const exercicio = exercicioRepo.buscarPorId(req.params.id);
+router.get("/exercicios/editar/:id", somenteGestor, (req, res) => {
+    const exercicio = exercicioRepo.buscarPorId(String(req.params.id));
     if (!exercicio) return res.redirect("/exercicios");
     res.render("exercício-form", { exercicio });
 });
 
-router.post("/exercicios/salvar", (req, res) => {
+router.post("/exercicios/salvar", somenteGestor, (req, res) => {
     const { id, nome, grupoMuscular, series, repeticoes } = req.body;
 
     if (id) {
@@ -149,9 +181,10 @@ router.post("/exercicios/salvar", (req, res) => {
     res.redirect("/exercicios");
 });
 
-router.get("/exercicios/excluir/:id", (req, res) => {
-    exercicioRepo.remover(req.params.id);
-    emitUpdate("exercicio_deleted", { id: req.params.id });
+router.get("/exercicios/excluir/:id", somenteGestor, (req, res) => {
+    const id = String(req.params.id);
+    exercicioRepo.remover(id);
+    emitUpdate("exercicio_deleted", { id });
     res.redirect("/exercicios");
 });
 

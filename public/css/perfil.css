@@ -20,3 +20,17 @@
 .perfil-card strong {
   color: var(--text-main);
 }
+
+.perfil-foto {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+}
+
+.perfil-card .btn {
+  display: inline-block;
+  margin-top: 1rem;
+}

@@ -12,9 +12,11 @@
 
             <h1>Treinos</h1>
 
-            <a href="/treinos/novo" class="btn">
-                Novo Treino
-            </a>
+            <% if (usuario && usuario.tipo !== 'Aluno') { %>
+                <a href="/treinos/novo" class="btn">
+                    Novo Treino
+                </a>
+            <% } %>
 
         </div>
 
@@ -47,15 +49,17 @@
 
                             <td>
 
-                                <div class="acoes-container">
-                                    <a href="/treinos/editar/<%= treino.id %>" class="btn-edit">
-                                        Editar
-                                    </a>
+                                <% if (usuario && usuario.tipo !== 'Aluno') { %>
+                                    <div class="acoes-container">
+                                        <a href="/treinos/editar/<%= treino.id %>" class="btn-edit">
+                                            Editar
+                                        </a>
 
-                                    <a href="/treinos/excluir/<%= treino.id %>" class="btn-delete">
-                                        Excluir
-                                    </a>
-                                </div>
+                                        <a href="/treinos/excluir/<%= treino.id %>" class="btn-delete">
+                                            Excluir
+                                        </a>
+                                    </div>
+                                <% } %>
 
                             </td>
 
