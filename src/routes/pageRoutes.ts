@@ -16,7 +16,7 @@ const usuarioRepo = new UsuarioRepository();
 const conclusaoRepo = new ConclusaoRepository();
 
 // Monta o histórico de treinos concluídos de um aluno, com dados do treino + estatísticas
-function montarHistoricoDoAluno(alunoId: string) {
+function montarHistoricoDoAluno(alunoId: string, metaMensal?: number) {
     const conclusoes = conclusaoRepo.listarPorAluno(alunoId);
 
     const historico = conclusoes
@@ -60,7 +60,7 @@ function montarHistoricoDoAluno(alunoId: string) {
             esteMes: concluidosEsteMes,
             sequenciaAtual,
             totalMesesAtivos: mesesAtivos.size,
-            metaMensal: 12 // Meta padrão de 12 treinos por mês
+            metaMensal: metaMensal || 12 // Usa a meta do usuário ou padrão de 12
         }
     };
 }
@@ -201,8 +201,8 @@ router.get("/perfil", somenteLogado, (req, res) => {
     const meuAluno = usuario.tipo === "Aluno" ? alunoRepo.buscarPorUsuarioId(usuario.id) : null;
 
     const { historico, stats } = meuAluno
-        ? montarHistoricoDoAluno(meuAluno.id)
-        : { historico: [], stats: { total: 0, esteMes: 0, sequenciaAtual: 0, totalMesesAtivos: 0, metaMensal: 0 } };
+        ? montarHistoricoDoAluno(meuAluno.id, usuario.metaMensal)
+        : { historico: [], stats: { total: 0, esteMes: 0, sequenciaAtual: 0, totalMesesAtivos: 0, metaMensal: usuario.metaMensal || 0 } };
 
     // Buscar treinos atribuídos ao aluno (com status de conclusão)
     let treinosAtribuidos: any[] = [];
@@ -228,10 +228,13 @@ router.post("/perfil/salvar", somenteLogado, (req, res) => {
         }
 
         const usuarioLogado = req.session.usuario!;
-        const { nome, telefone } = req.body;
+        const { nome, telefone, metaMensal } = req.body;
         const foto = req.file ? "/uploads/perfil/" + req.file.filename : undefined;
 
-        const usuarioAtualizado = usuarioRepo.atualizarPerfil(usuarioLogado.id, nome, telefone, foto);
+        // Converte a meta mensal para número, se fornecida
+        const novaMeta = metaMensal !== undefined && metaMensal !== "" ? parseInt(metaMensal, 10) : undefined;
+
+        const usuarioAtualizado = usuarioRepo.atualizarPerfil(usuarioLogado.id, nome, telefone, foto, novaMeta);
 
         if (usuarioAtualizado) {
             // Mantém a sessão sincronizada com os novos dados (sem a senha)
@@ -241,7 +244,8 @@ router.post("/perfil/salvar", somenteLogado, (req, res) => {
                 email: usuarioAtualizado.email,
                 tipo: usuarioAtualizado.tipo,
                 telefone: usuarioAtualizado.telefone,
-                foto: usuarioAtualizado.foto
+                foto: usuarioAtualizado.foto,
+                metaMensal: usuarioAtualizado.metaMensal || 12
             };
         }
 
@@ -316,7 +320,10 @@ router.get("/alunos/:id/historico", somenteGestor, (req, res) => {
     const aluno = alunoRepo.buscar(String(req.params.id));
     if (!aluno) return res.redirect("/alunos");
 
-    const { historico, stats } = montarHistoricoDoAluno(aluno.id);
+    // Busca o usuário vinculado para pegar a meta mensal
+    const usuarioVinculado = aluno.usuarioId ? usuarioRepo.buscarPorId(aluno.usuarioId) : undefined;
+
+    const { historico, stats } = montarHistoricoDoAluno(aluno.id, usuarioVinculado?.metaMensal);
 
     res.render("historico", { aluno, historico, stats });
 });
@@ -387,22 +394,16 @@ router.get("/treinos/desmarcar/:id", somenteLogado, (req, res) => {
         }
     }
 
-    res.redirect("/treinos");
+    res.redirect(req.query.voltar === "dashboard" ? "/dashboard" : "/treinos");
 });
 
-// Atalho do dashboard: registra uma nova conclusão do treino "de novo" (desmarca o registro
-// antigo e marca um novo, com a data de hoje) — útil pro aluno repetir o último treino feito
 router.get("/treinos/repetir/:id", somenteLogado, (req, res) => {
     const usuario = req.session.usuario!;
     const treinoId = String(req.params.id);
 
     if (usuario.tipo === "Aluno") {
         const meuAluno = alunoRepo.buscarPorUsuarioId(usuario.id);
-        const treino = treinoRepo.buscarPorId(treinoId);
-        const foiAtribuido = meuAluno && treino && (treino.alunosIds || []).includes(meuAluno.id);
-
-        if (meuAluno && foiAtribuido) {
-            conclusaoRepo.desmarcar(treinoId, meuAluno.id);
+        if (meuAluno) {
             conclusaoRepo.marcar(treinoId, meuAluno.id);
         }
     }
@@ -411,13 +412,15 @@ router.get("/treinos/repetir/:id", somenteLogado, (req, res) => {
 });
 
 router.get("/treinos/novo", somenteGestor, (req, res) => {
-    res.render("treino-form", { treino: null, alunos: alunoRepo.listar() });
+    const alunos = alunoRepo.listar();
+    res.render("treino-form", { treino: null, alunos });
 });
 
 router.get("/treinos/editar/:id", somenteGestor, (req, res) => {
     const treino = treinoRepo.buscarPorId(String(req.params.id));
     if (!treino) return res.redirect("/treinos");
-    res.render("treino-form", { treino, alunos: alunoRepo.listar() });
+    const alunos = alunoRepo.listar();
+    res.render("treino-form", { treino, alunos });
 });
 
 router.post("/treinos/salvar", somenteGestor, (req, res) => {
@@ -438,8 +441,11 @@ router.post("/treinos/salvar", somenteGestor, (req, res) => {
 router.get("/treinos/excluir/:id", somenteGestor, (req, res) => {
     const id = String(req.params.id);
     treinoRepo.remover(id);
-    // remove também os registros de conclusão órfãos desse treino
-    conclusaoRepo.listarPorTreino(id).forEach(c => conclusaoRepo.desmarcar(c.treinoId, c.alunoId));
+    // Remove todas as conclusões deste treino
+    const conclusoes = conclusaoRepo.listar();
+    const novasConclusoes = conclusoes.filter(c => c.treinoId !== id);
+    const { salvarArquivo } = require("../utils/jsonHelper");
+    salvarArquivo("dados/conclusoes.json", novasConclusoes);
     emitUpdate("treino_deleted", { id });
     res.redirect("/treinos");
 });
@@ -466,10 +472,8 @@ router.post("/exercicios/salvar", somenteGestor, (req, res) => {
 
     if (id) {
         exercicioRepo.atualizar(id, nome, grupoMuscular, Number(series), Number(repeticoes));
-        emitUpdate("exercicio_updated", { nome });
     } else {
         exercicioRepo.criar(nome, grupoMuscular, Number(series), Number(repeticoes));
-        emitUpdate("exercicio_created", { nome });
     }
 
     res.redirect("/exercicios");
@@ -478,7 +482,6 @@ router.post("/exercicios/salvar", somenteGestor, (req, res) => {
 router.get("/exercicios/excluir/:id", somenteGestor, (req, res) => {
     const id = String(req.params.id);
     exercicioRepo.remover(id);
-    emitUpdate("exercicio_deleted", { id });
     res.redirect("/exercicios");
 });
 

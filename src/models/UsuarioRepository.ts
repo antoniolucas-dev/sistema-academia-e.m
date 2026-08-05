@@ -25,7 +25,8 @@ export class UsuarioRepository {
       senha,
       tipo,
       telefone: "",
-      foto: ""
+      foto: "",
+      metaMensal: 12
     };
 
     const usuarios = this.listar();
@@ -35,7 +36,7 @@ export class UsuarioRepository {
   }
 
   // Atualiza os dados que o próprio usuário pode editar no seu perfil
-  atualizarPerfil(id: string, nome: string, telefone: string, foto?: string): Usuario | null {
+  atualizarPerfil(id: string, nome: string, telefone: string, foto?: string, metaMensal?: number): Usuario | null {
     const usuarios = this.listar();
     const indice = usuarios.findIndex(usuario => usuario.id === id);
 
@@ -45,6 +46,9 @@ export class UsuarioRepository {
     usuarios[indice].telefone = telefone;
     if (foto) {
       usuarios[indice].foto = foto;
+    }
+    if (metaMensal !== undefined) {
+      usuarios[indice].metaMensal = metaMensal;
     }
 
     salvarArquivo(ARQUIVO, usuarios);

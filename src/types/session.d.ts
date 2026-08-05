@@ -10,6 +10,7 @@ declare module "express-session" {
       tipo: TipoUsuario;
       telefone: string;
       foto: string;
+      metaMensal: number;
     };
   }
 }

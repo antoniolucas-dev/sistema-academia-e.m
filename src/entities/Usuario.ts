@@ -8,7 +8,8 @@ export default class Usuario{
         public senha:string,
         public tipo:TipoUsuario = "Aluno",
         public telefone:string = "",
-        public foto:string = ""
+        public foto:string = "",
+        public metaMensal:number = 12
     ){}
 
 }

@@ -60,6 +60,17 @@
                     <input type="text" id="telefone" name="telefone" value="<%= usuario.telefone || '' %>" placeholder="(00) 00000-0000">
                 </div>
 
+                <% if (usuario.tipo === 'Aluno') { %>
+                <div class="form-group">
+                    <label for="metaMensal">
+                        <i class="fa-solid fa-bullseye" style="margin-right: 0.4rem; color: var(--primary);"></i>
+                        Meta mensal de treinos
+                    </label>
+                    <input type="number" id="metaMensal" name="metaMensal" value="<%= usuario.metaMensal || 12 %>" min="1" max="365" placeholder="12">
+                    <small style="font-size: 0.75rem; color: var(--text-faint);">Defina quantos treinos você quer realizar por mês</small>
+                </div>
+                <% } %>
+
                 <button class="btn" type="submit" style="margin-top: 0.5rem;">
                     <i class="fa-solid fa-floppy-disk"></i>
                     Salvar Alterações
