@@ -2,32 +2,153 @@
 
 <%- include("partials/navbar") %>
 
-<style>
-    .hero {
-        height: 100vh;
-        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9)), url('/img/musculação.png');
-        background-size: cover;
-        background-position: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-    }
-    .hero h1 {
-        font-size: clamp(3rem, 10vw, 5.5rem);
-        font-weight: 900;
-        text-transform: uppercase;
-    }
-    .hero h1 span { color: var(--primary); }
-</style>
-
-<div class="hero">
+<!-- HERO -->
+<section class="hero">
     <h1>DOMINE SUA <span>EVOLUÇÃO.</span></h1>
     <p>A plataforma definitiva para gestão de treinos e alta performance.</p>
     <div class="hero-buttons">
         <a href="/login" class="btn">COMEÇAR AGORA</a>
     </div>
-</div>
+</section>
+
+<!-- DIFERENCIAIS -->
+<section class="secao-diferenciais">
+    <div class="secao-container">
+        <h2 class="secao-titulo">Por que escolher a <span class="text-primary">Academia E.M</span>?</h2>
+        <p class="secao-subtitulo">Tudo que você precisa para treinar com eficiência e acompanhar sua evolução.</p>
+        <div class="cards-diferenciais">
+            <div class="card-diferencial">
+                <div class="card-diferencial-icone">
+                    <i class="fa-solid fa-dumbbell"></i>
+                </div>
+                <h3>Treinos Personalizados</h3>
+                <p>Receba treinos adaptados ao seu objetivo, nível e disponibilidade. Cada detalhe pensado pra você evoluir.</p>
+            </div>
+            <div class="card-diferencial">
+                <div class="card-diferencial-icone">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <h3>Acompanhamento de Progresso</h3>
+                <p>Visualize sua evolução com gráficos, estatísticas e histórico completo dos seus treinos.</p>
+            </div>
+            <div class="card-diferencial">
+                <div class="card-diferencial-icone">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <h3>Base de Exercícios</h3>
+                <p>Catálogo completo com descrições e grupos musculares para cada exercício disponível.</p>
+            </div>
+            <div class="card-diferencial">
+                <div class="card-diferencial-icone">
+                    <i class="fa-solid fa-fire"></i>
+                </div>
+                <h3>Metas e Sequências</h3>
+                <p>Defina sua meta mensal e acompanhe sua sequência de treinos. Gamificação que motiva.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="secao-como-funciona">
+    <div class="secao-container">
+        <h2 class="secao-titulo">Como <span class="text-primary">funciona</span>?</h2>
+        <p class="secao-subtitulo">Em 3 passos simples, você começa a treinar com acompanhamento profissional.</p>
+        <div class="passos-container">
+            <div class="passo">
+                <div class="passo-numero">1</div>
+                <h3>Crie sua conta</h3>
+                <p>Faça seu cadastro gratuitamente e acesse a plataforma em segundos.</p>
+            </div>
+            <div class="passo-connector"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="passo">
+                <div class="passo-numero">2</div>
+                <h3>Receba seus treinos</h3>
+                <p>Seu professor atribui os treinos diretamente na plataforma para você.</p>
+            </div>
+            <div class="passo-connector"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="passo">
+                <div class="passo-numero">3</div>
+                <h3>Acompanhe sua evolução</h3>
+                <p>Marque seus treinos como concluídos e veja seu progresso em tempo real.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ESTATÍSTICAS -->
+<section class="secao-stats">
+    <div class="secao-container">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-numero">50+</div>
+                <div class="stat-label">Exercícios disponíveis</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-numero">24/7</div>
+                <div class="stat-label">Acesso à plataforma</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-numero">100%</div>
+                <div class="stat-label">Foco no seu objetivo</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-numero">0</div>
+                <div class="stat-label">Desculpas aceitas</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="secao-cta">
+    <div class="secao-container">
+        <h2>Pronto para <span class="text-primary">começar</span>?</h2>
+        <p>Entre agora e transforme sua rotina de treinos.</p>
+        <a href="/login" class="btn btn-cta">ENTRAR NA PLATAFORMA</a>
+    </div>
+</section>
+
+<!-- RODAPÉ COMPLETO -->
+<footer class="site-footer">
+    <div class="footer-container">
+        <div class="footer-col">
+            <div class="footer-logo">
+                <i class="fa-solid fa-dumbbell" style="color: var(--primary);"></i>
+                Academia E.M
+            </div>
+            <p class="footer-desc">Plataforma de gestão de treinos focada em alta performance e acompanhamento de resultados.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Links Rápidos</h4>
+            <ul>
+                <li><a href="/">Início</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/treinos">Treinos</a></li>
+                <li><a href="/exercicios">Exercícios</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Conta</h4>
+            <ul>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/cadastro">Cadastro</a></li>
+                <li><a href="/perfil">Perfil</a></li>
+                <li><a href="/informacoes">Informações</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Contato</h4>
+            <ul>
+                <li><i class="fa-solid fa-envelope" style="margin-right: 8px; color: var(--primary);"></i> contato@academiaem.com</li>
+                <li><i class="fa-solid fa-phone" style="margin-right: 8px; color: var(--primary);"></i> (84) 99272-6598</li>
+                <li><i class="fa-solid fa-location-dot" style="margin-right: 8px; color: var(--primary);"></i> Mossoró, RN</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; <%= new Date().getFullYear() %> Academia E.M. Todos os direitos reservados.</p>
+    </div>
+</footer>
 
 <%- include("partials/footer") %>
