@@ -1,4 +1,4 @@
-import Treino from "../entities/Treino";
+import Treino, { TreinoExercicio } from "../entities/Treino";
 import { lerArquivo, salvarArquivo } from "../utils/jsonHelper";
 import { gerarId } from "../utils/idGenerator";
 
@@ -13,14 +13,22 @@ export class TreinoRepository {
     return this.listar().find(treino => treino.id === id);
   }
 
-  criar(nome: string, categoria: string, duracao: number, descricao: string, alunosIds: string[] = []): Treino {
+  criar(
+    nome: string,
+    categoria: string,
+    duracao: number,
+    descricao: string,
+    alunosIds: string[] = [],
+    exercicios: TreinoExercicio[] = []
+  ): Treino {
     const novoTreino: Treino = {
       id: gerarId(),
       nome,
       categoria,
       duracao,
       descricao,
-      alunosIds
+      alunosIds,
+      exercicios
     };
 
     const treinos = this.listar();
@@ -29,11 +37,19 @@ export class TreinoRepository {
     return novoTreino;
   }
 
-  atualizar(id: string, nome: string, categoria: string, duracao: number, descricao: string, alunosIds: string[] = []): boolean {
+  atualizar(
+    id: string,
+    nome: string,
+    categoria: string,
+    duracao: number,
+    descricao: string,
+    alunosIds: string[] = [],
+    exercicios: TreinoExercicio[] = []
+  ): boolean {
     const treinos = this.listar();
     const indice = treinos.findIndex(t => t.id === id);
     if (indice !== -1) {
-      treinos[indice] = { id, nome, categoria, duracao, descricao, alunosIds };
+      treinos[indice] = { id, nome, categoria, duracao, descricao, alunosIds, exercicios };
       salvarArquivo(ARQUIVO, treinos);
       return true;
     }
@@ -50,5 +66,4 @@ export class TreinoRepository {
     return false;
   }
 }
-
 

@@ -35,6 +35,7 @@
                     <th>Nome</th>
                     <th>Categoria</th>
                     <th>Duração</th>
+                    <th>Exercícios</th>
                     <% if (usuario && usuario.tipo !== 'Aluno') { %>
                         <th>Atribuído a</th>
                         <th>Ações</th>
@@ -58,6 +59,28 @@
                             <td><span class="badge-categoria"><%= treino.categoria %></span></td>
 
                             <td><span class="treino-duracao"><%= treino.duracao %> min</span></td>
+
+                            <td>
+                                <% const exsDoTreino = treino.exercicios || []; %>
+                                <% if (exsDoTreino.length > 0) { %>
+                                    <details>
+                                        <summary class="treino-duracao" style="cursor: pointer;">
+                                            <%= exsDoTreino.length %>
+                                            <%= exsDoTreino.length === 1 ? 'exercício' : 'exercícios' %>
+                                        </summary>
+                                        <ul style="margin: 0.5rem 0 0; padding-left: 1.1rem; font-size: 0.82rem; color: var(--text-muted);">
+                                            <% exsDoTreino.forEach(function(ex) { %>
+                                                <% const info = mapaExercicios[ex.exercicioId]; %>
+                                                <% if (info) { %>
+                                                    <li><%= info.nome %> — <%= ex.series %>x<%= ex.repeticoes %></li>
+                                                <% } %>
+                                            <% }) %>
+                                        </ul>
+                                    </details>
+                                <% } else { %>
+                                    <span class="treino-duracao">Nenhum</span>
+                                <% } %>
+                            </td>
 
                             <% if (usuario && usuario.tipo !== 'Aluno') { %>
 
@@ -116,7 +139,7 @@
 
                     <tr>
 
-                        <td colspan="<%= usuario && usuario.tipo !== 'Aluno' ? 5 : 4 %>">
+                        <td colspan="<%= usuario && usuario.tipo !== 'Aluno' ? 6 : 5 %>">
                             <% if (usuario && usuario.tipo === 'Aluno' && meuAluno) { %>
                                 Nenhum treino foi atribuído a você ainda.
                             <% } else { %>

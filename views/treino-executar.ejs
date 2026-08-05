@@ -1,0 +1,88 @@
+<%- include("partials/header", { titulo: "Executar: " + (treino?.nome || "Treino") }) %>
+
+<%- include("partials/navbar") %>
+
+<div class="container">
+
+    <%- include("partials/sidebar") %>
+
+    <main class="content">
+
+        <div class="page-header">
+            <h1><%= treino?.nome %></h1>
+            <a href="/treinos" class="btn-edit">Voltar</a>
+        </div>
+
+        <p style="color: var(--text-muted); margin-top: -0.5rem;">
+            <span class="badge-categoria"><%= treino?.categoria %></span>
+            <span class="treino-duracao" style="margin-left: 0.5rem;"><%= treino?.duracao %> min</span>
+        </p>
+
+        <% 
+            const exercicios = Array.isArray(exerciciosDoTreino) ? exerciciosDoTreino : [];
+            const concluidos = Array.isArray(concluidosIds) ? concluidosIds : [];
+            
+            const total = exercicios.length; 
+            const feitos = concluidos.length; 
+            const percentual = total > 0 ? Math.round((feitos / total) * 100) : 0; 
+        %>
+
+        <div class="progresso-mensal">
+            <div class="progresso-mensal-header">
+                <h3>Progresso do treino</h3>
+                <span><%= feitos %>/<%= total %> exercícios</span>
+            </div>
+
+            <div class="progresso-barra-container">
+                <div class="progresso-barra" style="--largura: <%= percentual %>%; width: var(--largura);"></div>
+            </div>
+
+            <% if (total > 0 && feitos >= total) { %>
+                <div class="progresso-info">
+                    <span style="color: var(--success);">Treino concluído! 🎉</span>
+                </div>
+            <% } %>
+        </div>
+
+        <% if (total === 0) { %>
+            <p style="color: var(--text-muted);">
+                Esse treino ainda não tem exercícios cadastrados nele. Peça pra um professor editar o treino
+                e adicionar exercícios do catálogo.
+            </p>
+        <% } else { %>
+            <div class="lista-exercicios-treino">
+                <% exercicios.forEach(function(ex) { %>
+                    <% const feito = concluidos.some(id => String(id) === String(ex.exercicioId)); %>
+                    
+                    <div class="exercicio-treino-item">
+                        <div class="checkbox-item">
+                            <% if (feito) { %>
+                                <a href="/treinos/<%= treino?.id %>/executar/desmarcar/<%= ex.exercicioId %>">
+                                    <i class="fa-solid fa-square-check" style="color: var(--success); font-size: 1.1rem;"></i>
+                                </a>
+                            <% } else { %>
+                                <a href="/treinos/<%= treino?.id %>/executar/marcar/<%= ex.exercicioId %>">
+                                    <i class="fa-regular fa-square" style="color: var(--text-muted); font-size: 1.1rem;"></i>
+                                </a>
+                            <% } %>
+
+                            <span class="<%= feito ? 'exercicio-concluido' : '' %>">
+                                <%= ex.nome %>
+                            </span>
+
+                            <span class="badge-grupo"><%= ex.grupoMuscular %></span>
+                        </div>
+
+                        <div class="exercicio-treino-campos">
+                            <span class="treino-duracao"><%= ex.series %>x<%= ex.repeticoes %></span>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+
+    </main>
+
+</div>
+
+<%- include("partials/footer") %>

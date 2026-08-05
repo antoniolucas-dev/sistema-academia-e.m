@@ -65,6 +65,57 @@
                 rows="5"
             ><%= treino ? treino.descricao : '' %></textarea>
 
+            <label>Exercícios deste treino</label>
+            <% const exerciciosDoTreino = (treino && treino.exercicios) || []; %>
+            <% function exercicioNoTreino(id) { return exerciciosDoTreino.find(e => e.exercicioId === id); } %>
+            <% if (catalogoExercicios && catalogoExercicios.length > 0) { %>
+                <div class="lista-exercicios-treino">
+                    <% catalogoExercicios.forEach(ex => { %>
+                        <% const jaSelecionado = exercicioNoTreino(ex.id); %>
+                        <div class="exercicio-treino-item">
+                            <label class="checkbox-item">
+                                <input
+                                    type="checkbox"
+                                    class="exercicio-toggle"
+                                    <%= jaSelecionado ? 'checked' : '' %>
+                                >
+                                <span><%= ex.nome %></span>
+                                <span class="badge-grupo"><%= ex.grupoMuscular %></span>
+                            </label>
+                            <div class="exercicio-treino-campos">
+                                <input
+                                    type="hidden"
+                                    name="exercicioId"
+                                    value="<%= ex.id %>"
+                                    <%= !jaSelecionado ? 'disabled' : '' %>
+                                >
+                                <input
+                                    type="number"
+                                    name="series"
+                                    placeholder="Séries"
+                                    min="1"
+                                    value="<%= jaSelecionado ? jaSelecionado.series : ex.series %>"
+                                    <%= !jaSelecionado ? 'disabled' : '' %>
+                                >
+                                <input
+                                    type="number"
+                                    name="repeticoes"
+                                    placeholder="Repetições"
+                                    min="1"
+                                    value="<%= jaSelecionado ? jaSelecionado.repeticoes : ex.repeticoes %>"
+                                    <%= !jaSelecionado ? 'disabled' : '' %>
+                                >
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">
+                    Nenhum exercício cadastrado ainda. Cadastre exercícios na área "Exercícios" pra poder
+                    montar este treino com eles.
+                </p>
+            <% } %>
+
             <label>Atribuir a quais alunos?</label>
             <% if (alunos && alunos.length > 0) { %>
                 <div class="checkbox-lista">
@@ -115,6 +166,20 @@
 
     categoriaSelect.addEventListener('change', alternarCampoCategoria);
     alternarCampoCategoria();
+
+    // Ao marcar/desmarcar um exercício, habilita ou desabilita os campos dele
+    // (campos desabilitados não são enviados no POST, mantendo os arrays
+    // exercicioId[]/series[]/repeticoes[] alinhados só com os selecionados)
+    document.querySelectorAll('.exercicio-toggle').forEach(toggle => {
+        const item = toggle.closest('.exercicio-treino-item');
+        const campos = item.querySelectorAll('.exercicio-treino-campos input');
+
+        toggle.addEventListener('change', () => {
+            campos.forEach(campo => {
+                campo.disabled = !toggle.checked;
+            });
+        });
+    });
 
     // No envio, evita mandar os dois campos "categoria" ao mesmo tempo:
     // se escolheu "Outro", desativa o select; senão, mantém o texto desativado.

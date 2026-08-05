@@ -1,4 +1,4 @@
-<%- include("partials/header", { titulo: "Cadastro de Exercício" }) %>
+<%- include("partials/header", { titulo: exercicio ? "Editar Exercício" : "Cadastro de Exercício" }) %>
 
 <%- include("partials/navbar") %>
 
@@ -8,28 +8,49 @@
 
     <main class="content">
 
-        <h1>Cadastrar Exercício</h1>
+        <h1><%= exercicio ? "Editar Exercício" : "Cadastrar Exercício" %></h1>
 
         <form action="/exercicios/salvar" method="POST" class="form">
+
+            <% if (exercicio) { %>
+                <input type="hidden" name="id" value="<%= exercicio.id %>">
+            <% } %>
 
             <input
                 type="text"
                 name="nome"
                 placeholder="Nome do exercício"
+                value="<%= exercicio ? exercicio.nome : '' %>"
                 required
             >
 
+            <% const gruposPreDefinidos = ["Peito", "Costas", "Pernas", "Ombro", "Bíceps", "Tríceps", "Abdômen/Core", "Corpo inteiro", "Cardio"]; %>
+            <% const grupoEhPreDefinido = exercicio && gruposPreDefinidos.includes(exercicio.grupoMuscular); %>
+            <% const grupoEhOutro = exercicio && exercicio.grupoMuscular && !grupoEhPreDefinido; %>
+
+            <label for="grupo-select">Grupo muscular</label>
+            <select id="grupo-select" name="grupoMuscular" required>
+                <option value="" disabled <%= !exercicio ? 'selected' : '' %>>Selecione um grupo muscular</option>
+                <% gruposPreDefinidos.forEach(g => { %>
+                    <option value="<%= g %>" <%= exercicio && exercicio.grupoMuscular === g ? 'selected' : '' %>><%= g %></option>
+                <% }) %>
+                <option value="__outro__" <%= grupoEhOutro ? 'selected' : '' %>>Outro (especificar)</option>
+            </select>
+
             <input
                 type="text"
+                id="grupo-outro"
                 name="grupoMuscular"
-                placeholder="Grupo muscular"
-                required
+                placeholder="Digite o grupo muscular"
+                value="<%= grupoEhOutro ? exercicio.grupoMuscular : '' %>"
+                <% if (!grupoEhOutro) { %> style="display: none;" <% } %>
             >
 
             <input
                 type="number"
                 name="series"
                 placeholder="Séries"
+                value="<%= exercicio ? exercicio.series : '' %>"
                 required
             >
 
@@ -37,11 +58,12 @@
                 type="number"
                 name="repeticoes"
                 placeholder="Repetições"
+                value="<%= exercicio ? exercicio.repeticoes : '' %>"
                 required
             >
 
             <button type="submit" class="btn">
-                Salvar
+                <%= exercicio ? "Atualizar" : "Salvar" %>
             </button>
 
         </form>
@@ -49,5 +71,27 @@
     </main>
 
 </div>
+
+<script>
+    const grupoSelect = document.getElementById('grupo-select');
+    const grupoOutro = document.getElementById('grupo-outro');
+
+    function alternarCampoGrupo() {
+        const escolheuOutro = grupoSelect.value === '__outro__';
+        grupoOutro.style.display = escolheuOutro ? 'block' : 'none';
+        grupoOutro.required = escolheuOutro;
+        grupoOutro.disabled = !escolheuOutro;
+    }
+
+    grupoSelect.addEventListener('change', alternarCampoGrupo);
+    alternarCampoGrupo();
+
+    // No envio, evita mandar os dois campos "grupoMuscular" ao mesmo tempo
+    document.querySelector('.form').addEventListener('submit', () => {
+        const escolheuOutro = grupoSelect.value === '__outro__';
+        grupoSelect.disabled = escolheuOutro;
+        grupoOutro.disabled = !escolheuOutro;
+    });
+</script>
 
 <%- include("partials/footer") %>

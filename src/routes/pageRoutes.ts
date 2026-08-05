@@ -4,6 +4,7 @@ import { TreinoRepository } from "../models/TreinoRepository";
 import { ExercicioRepository } from "../models/ExercicioRepository";
 import { UsuarioRepository } from "../models/UsuarioRepository";
 import { ConclusaoRepository } from "../models/ConclusaoRepository";
+import { ProgressoRepository } from "../models/ProgressoRepository";
 import { emitUpdate } from "../socket";
 import { somenteLogado, somenteGestor } from "../middlewares/auth";
 import uploadPerfil from "../middlewares/uploadPerfil";
@@ -14,6 +15,7 @@ const treinoRepo = new TreinoRepository();
 const exercicioRepo = new ExercicioRepository();
 const usuarioRepo = new UsuarioRepository();
 const conclusaoRepo = new ConclusaoRepository();
+const progressoRepo = new ProgressoRepository();
 
 // Monta o histórico de treinos concluídos de um aluno, com dados do treino + estatísticas
 function montarHistoricoDoAluno(alunoId: string, metaMensal?: number) {
@@ -370,7 +372,13 @@ router.get("/treinos", somenteLogado, (req, res) => {
         });
     }
 
-    res.render("treinos", { treinos, alunos, meuAluno, concluidosIds, totalConcluidosPorTreino });
+    // Mapa id -> exercício, pra exibir nome/grupo muscular sem precisar buscar de novo na view
+    const mapaExercicios: Record<string, { nome: string; grupoMuscular: string }> = {};
+    exercicioRepo.listar().forEach(e => {
+        mapaExercicios[e.id] = { nome: e.nome, grupoMuscular: e.grupoMuscular };
+    });
+
+    res.render("treinos", { treinos, alunos, meuAluno, concluidosIds, totalConcluidosPorTreino, mapaExercicios });
 });
 
 router.get("/treinos/concluir/:id", somenteLogado, (req, res) => {
@@ -404,6 +412,89 @@ router.get("/treinos/desmarcar/:id", somenteLogado, (req, res) => {
     res.redirect(req.query.voltar === "dashboard" ? "/dashboard" : "/treinos");
 });
 
+// --- MODO EXECUÇÃO (aluno marca exercício por exercício dentro do treino) ---
+
+// Sincroniza a conclusão do treino inteiro com o progresso de exercícios:
+// se todos os exercícios do treino estão marcados, conclui o treino;
+// caso contrário, garante que o treino não fique marcado como concluído.
+function sincronizarConclusaoComProgresso(treinoId: string, alunoId: string) {
+    const treino = treinoRepo.buscarPorId(treinoId);
+    if (!treino) return;
+
+    const totalExercicios = (treino.exercicios || []).length;
+    if (totalExercicios === 0) return; // treino sem exercícios cadastrados: não mexe (usa o fluxo antigo)
+
+    const progresso = progressoRepo.buscar(treinoId, alunoId);
+    const concluidos = progresso ? progresso.exerciciosConcluidosIds.length : 0;
+
+    if (concluidos >= totalExercicios) {
+        conclusaoRepo.marcar(treinoId, alunoId);
+    } else {
+        conclusaoRepo.desmarcar(treinoId, alunoId);
+    }
+}
+
+router.get("/treinos/:id/executar", somenteLogado, (req, res) => {
+    const usuario = req.session.usuario!;
+    const treinoId = String(req.params.id);
+    const treino = treinoRepo.buscarPorId(treinoId);
+
+    if (!treino) return res.redirect("/treinos");
+
+    const meuAluno = usuario.tipo === "Aluno" ? alunoRepo.buscarPorUsuarioId(usuario.id) : null;
+    const foiAtribuido = meuAluno && (treino.alunosIds || []).includes(meuAluno.id);
+
+    // Só o próprio aluno (com o treino atribuído a ele) pode executar
+    if (!meuAluno || !foiAtribuido) {
+        return res.redirect("/treinos");
+    }
+
+    const catalogoExercicios = exercicioRepo.listar();
+    const exerciciosDoTreino = (treino.exercicios || [])
+        .map(te => {
+            const info = catalogoExercicios.find(e => e.id === te.exercicioId);
+            return info ? { ...te, nome: info.nome, grupoMuscular: info.grupoMuscular } : null;
+        })
+        .filter(Boolean);
+
+    const progresso = progressoRepo.buscar(treinoId, meuAluno.id);
+    const concluidosIds = progresso ? progresso.exerciciosConcluidosIds : [];
+
+    res.render("treino-executar", { treino, exerciciosDoTreino, concluidosIds });
+});
+
+router.get("/treinos/:id/executar/marcar/:exercicioId", somenteLogado, (req, res) => {
+    const usuario = req.session.usuario!;
+    const treinoId = String(req.params.id);
+    const exercicioId = String(req.params.exercicioId);
+
+    if (usuario.tipo === "Aluno") {
+        const meuAluno = alunoRepo.buscarPorUsuarioId(usuario.id);
+        if (meuAluno) {
+            progressoRepo.marcarExercicio(treinoId, meuAluno.id, exercicioId);
+            sincronizarConclusaoComProgresso(treinoId, meuAluno.id);
+        }
+    }
+
+    res.redirect(`/treinos/${treinoId}/executar`);
+});
+
+router.get("/treinos/:id/executar/desmarcar/:exercicioId", somenteLogado, (req, res) => {
+    const usuario = req.session.usuario!;
+    const treinoId = String(req.params.id);
+    const exercicioId = String(req.params.exercicioId);
+
+    if (usuario.tipo === "Aluno") {
+        const meuAluno = alunoRepo.buscarPorUsuarioId(usuario.id);
+        if (meuAluno) {
+            progressoRepo.desmarcarExercicio(treinoId, meuAluno.id, exercicioId);
+            sincronizarConclusaoComProgresso(treinoId, meuAluno.id);
+        }
+    }
+
+    res.redirect(`/treinos/${treinoId}/executar`);
+});
+
 router.get("/treinos/repetir/:id", somenteLogado, (req, res) => {
     const usuario = req.session.usuario!;
     const treinoId = String(req.params.id);
@@ -420,25 +511,42 @@ router.get("/treinos/repetir/:id", somenteLogado, (req, res) => {
 
 router.get("/treinos/novo", somenteGestor, (req, res) => {
     const alunos = alunoRepo.listar();
-    res.render("treino-form", { treino: null, alunos });
+    const catalogoExercicios = exercicioRepo.listar();
+    res.render("treino-form", { treino: null, alunos, catalogoExercicios });
 });
 
 router.get("/treinos/editar/:id", somenteGestor, (req, res) => {
     const treino = treinoRepo.buscarPorId(String(req.params.id));
     if (!treino) return res.redirect("/treinos");
     const alunos = alunoRepo.listar();
-    res.render("treino-form", { treino, alunos });
+    const catalogoExercicios = exercicioRepo.listar();
+    res.render("treino-form", { treino, alunos, catalogoExercicios });
 });
+
+// Monta a lista de exercícios do treino a partir dos arrays paralelos enviados pelo form
+// (exercicioId[i], series[i], repeticoes[i] só existem para os exercícios que foram marcados)
+function normalizarExercicios(req: any): { exercicioId: string; series: number; repeticoes: number }[] {
+    const ids = normalizarLista(req.body.exercicioId);
+    const series = normalizarLista(req.body.series);
+    const repeticoes = normalizarLista(req.body.repeticoes);
+
+    return ids.map((exercicioId: string, i: number) => ({
+        exercicioId,
+        series: Number(series[i]) || 0,
+        repeticoes: Number(repeticoes[i]) || 0
+    }));
+}
 
 router.post("/treinos/salvar", somenteGestor, (req, res) => {
     const { id, nome, categoria, duracao, descricao } = req.body;
     const alunosIds = normalizarLista(req.body.alunosIds);
+    const exercicios = normalizarExercicios(req);
 
     if (id) {
-        treinoRepo.atualizar(id, nome, categoria, Number(duracao), descricao, alunosIds);
+        treinoRepo.atualizar(id, nome, categoria, Number(duracao), descricao, alunosIds, exercicios);
         emitUpdate("treino_updated", { nome });
     } else {
-        treinoRepo.criar(nome, categoria, Number(duracao), descricao, alunosIds);
+        treinoRepo.criar(nome, categoria, Number(duracao), descricao, alunosIds, exercicios);
         emitUpdate("treino_created", { nome });
     }
 
@@ -453,6 +561,7 @@ router.get("/treinos/excluir/:id", somenteGestor, (req, res) => {
     const novasConclusoes = conclusoes.filter(c => c.treinoId !== id);
     const { salvarArquivo } = require("../utils/jsonHelper");
     salvarArquivo("dados/conclusoes.json", novasConclusoes);
+    progressoRepo.removerPorTreino(id);
     emitUpdate("treino_deleted", { id });
     res.redirect("/treinos");
 });
