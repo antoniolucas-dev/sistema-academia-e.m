@@ -4,32 +4,56 @@
 
     <form action="/auth/login" method="POST" class="login-form">
 
-        <h2>Login</h2>
+        <div class="login-form-header">
+            <div class="login-logo">
+                <i class="fa-solid fa-dumbbell"></i>
+            </div>
+            <h2>Entrar</h2>
+            <p>Faça login para acessar sua conta</p>
+        </div>
 
         <% if (typeof erro !== 'undefined' && erro) { %>
-            <div class="alerta alerta-erro"><%= erro %></div>
+            <div class="alerta alerta-erro"><i class="fa-solid fa-circle-exclamation"></i> <%= erro %></div>
         <% } %>
 
         <% if (typeof sucesso !== 'undefined' && sucesso) { %>
-            <div class="alerta alerta-sucesso"><%= sucesso %></div>
+            <div class="alerta alerta-sucesso"><i class="fa-solid fa-circle-check"></i> <%= sucesso %></div>
         <% } %>
 
-        <input
-            type="email"
-            name="email"
-            placeholder="E-mail"
-            required
-        >
+        <div class="input-group">
+            <label for="email">E-mail</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-envelope input-icone"></i>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="seu@email.com"
+                    required
+                >
+            </div>
+        </div>
 
-        <input
-            type="password"
-            name="senha"
-            placeholder="Senha"
-            required
-        >
+        <div class="input-group">
+            <label for="senha">Senha</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-lock input-icone"></i>
+                <input
+                    type="password"
+                    id="senha"
+                    name="senha"
+                    placeholder="Sua senha"
+                    required
+                >
+                <button type="button" class="input-toggle" onclick="toggleSenha(this)">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
+        </div>
 
-        <button type="submit">
+        <button type="submit" class="btn-login">
             Entrar
+            <i class="fa-solid fa-arrow-right"></i>
         </button>
 
         <p class="login-form-rodape">
@@ -39,5 +63,19 @@
     </form>
 
 </div>
+
+<script>
+    function toggleSenha(btn) {
+        const input = btn.parentElement.querySelector('input');
+        const icon = btn.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.className = 'fa-solid fa-eye-slash';
+        } else {
+            input.type = 'password';
+            icon.className = 'fa-solid fa-eye';
+        }
+    }
+</script>
 
 <%- include("partials/footer") %>

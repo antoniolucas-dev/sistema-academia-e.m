@@ -4,59 +4,179 @@
 <div class="container">
     <%- include("partials/sidebar") %>
     <main class="content">
-        <div class="page-header">
-            <div>
-                <h1>Informações Institucionais</h1>
-                <p>Detalhes operacionais, planos e canais de atendimento da Academia E.M.</p>
+
+        <!-- Banner da página -->
+        <div class="info-hero">
+            <div class="info-hero-icon">
+                <i class="fa-solid fa-circle-info"></i>
             </div>
+            <h1>Informações Institucionais</h1>
+            <p>Tudo que você precisa saber sobre a Academia E.M. — planos, horários, contato e localização.</p>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-            
-            <!-- Horário -->
-            <div class="card">
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;">
-                    <i class="fa-solid fa-clock" style="color: var(--primary);"></i>
-                    <h3>Funcionamento</h3>
+        <!-- Horários -->
+        <section class="info-section">
+            <div class="info-section-header">
+                <div class="info-icon-box">
+                    <i class="fa-solid fa-clock"></i>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 0.75rem; color: var(--text-muted);">
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
-                        <span>Segunda a Sexta</span>
-                        <span style="color: #fff;">06h às 22h</span>
+                <div>
+                    <h2>Horário de Funcionamento</h2>
+                    <p>Nossos horários de atendimento e acesso à academia.</p>
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="horario-grid">
+                    <div class="horario-item">
+                        <span class="horario-dia">Segunda a Sexta</span>
+                        <span class="horario-hora">06h às 22h</span>
                     </div>
-                    <!-- Adicione os outros horários seguindo o mesmo padrão -->
+                    <div class="horario-item">
+                        <span class="horario-dia">Sábados</span>
+                        <span class="horario-hora">08h às 18h</span>
+                    </div>
+                    <div class="horario-item">
+                        <span class="horario-dia">Domingos e Feriados</span>
+                        <span class="horario-hora">09h às 14h</span>
+                    </div>
+                </div>
+                <div class="info-destaque">
+                    <i class="fa-solid fa-bolt" style="color: var(--primary);"></i>
+                    <span>Alunos com plano Premium têm acesso 24 horas.</span>
                 </div>
             </div>
+        </section>
 
-            <!-- Planos -->
-            <div class="card">
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;">
-                    <i class="fa-solid fa-tags" style="color: var(--primary);"></i>
-                    <h3>Planos de Adesão</h3>
+        <!-- Planos -->
+        <section class="info-section">
+            <div class="info-section-header">
+                <div class="info-icon-box">
+                    <i class="fa-solid fa-crown"></i>
                 </div>
-                <!-- Planos com bordas e ícones de destaque -->
+                <div>
+                    <h2>Nossos Planos</h2>
+                    <p>Escolha o plano que melhor se encaixa no seu objetivo.</p>
+                </div>
             </div>
+            <div class="planos-grid">
+                <div class="plano-card">
+                    <div class="plano-badge">Básico</div>
+                    <div class="plano-preco">R$ 79<span class="plano-periodo">/mês</span></div>
+                    <ul class="plano-features">
+                        <li><i class="fa-solid fa-check"></i> Acesso à musculação</li>
+                        <li><i class="fa-solid fa-check"></i> Horário comercial</li>
+                        <li><i class="fa-solid fa-check"></i> Treinos básicos</li>
+                        <li><i class="fa-solid fa-check"></i> Acesso à plataforma</li>
+                    </ul>
+                </div>
+                <div class="plano-card plano-destaque">
+                    <div class="plano-badge plano-badge-destaque">Mais Popular</div>
+                    <div class="plano-preco">R$ 129<span class="plano-periodo">/mês</span></div>
+                    <ul class="plano-features">
+                        <li><i class="fa-solid fa-check"></i> Acesso completo</li>
+                        <li><i class="fa-solid fa-check"></i> Horário estendido</li>
+                        <li><i class="fa-solid fa-check"></i> Treinos personalizados</li>
+                        <li><i class="fa-solid fa-check"></i> Acompanhamento semanal</li>
+                        <li><i class="fa-solid fa-check"></i> Acesso à plataforma</li>
+                    </ul>
+                </div>
+                <div class="plano-card">
+                    <div class="plano-badge">Premium</div>
+                    <div class="plano-preco">R$ 199<span class="plano-periodo">/mês</span></div>
+                    <ul class="plano-features">
+                        <li><i class="fa-solid fa-check"></i> Acesso 24 horas</li>
+                        <li><i class="fa-solid fa-check"></i> Todos os treinos</li>
+                        <li><i class="fa-solid fa-check"></i> Acompanhamento diário</li>
+                        <li><i class="fa-solid fa-check"></i> Avaliações mensais</li>
+                        <li><i class="fa-solid fa-check"></i> Suporte prioritário</li>
+                        <li><i class="fa-solid fa-check"></i> Acesso VIP à plataforma</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-            <!-- Contato -->
-            <div class="card">
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;">
-                    <i class="fa-solid fa-headset" style="color: var(--primary);"></i>
-                    <h3>Atendimento</h3>
+        <!-- Atendimento -->
+        <section class="info-section">
+            <div class="info-section-header">
+                <div class="info-icon-box">
+                    <i class="fa-solid fa-headset"></i>
                 </div>
-                <!-- Links de Instagram, E-mail e Telefone -->
+                <div>
+                    <h2>Canais de Atendimento</h2>
+                    <p>Fale conosco pelos canais abaixo. Responderemos o mais rápido possível.</p>
+                </div>
             </div>
+            <div class="contato-grid">
+                <a href="#" class="contato-card">
+                    <div class="contato-icone">
+                        <i class="fa-brands fa-instagram"></i>
+                    </div>
+                    <div class="contato-info">
+                        <h3>Instagram</h3>
+                        <p>@academia.em</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right contato-seta"></i>
+                </a>
+                <a href="#" class="contato-card">
+                    <div class="contato-icone">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+                    <div class="contato-info">
+                        <h3>WhatsApp</h3>
+                        <p>(84) 99272-6598</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right contato-seta"></i>
+                </a>
+                <a href="#" class="contato-card">
+                    <div class="contato-icone">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <div class="contato-info">
+                        <h3>E-mail</h3>
+                        <p>contato@academiaem.com</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right contato-seta"></i>
+                </a>
+            </div>
+        </section>
 
-            <!-- Localização -->
-            <div class="card">
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;">
-                    <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i>
-                    <h3>Localização</h3>
+        <!-- Localização -->
+        <section class="info-section">
+            <div class="info-section-header">
+                <div class="info-icon-box">
+                    <i class="fa-solid fa-location-dot"></i>
                 </div>
-                <button class="btn" style="width: 100%; background: rgba(255,255,255,0.05);">
-                    VER NO MAPA
-                </button>
+                <div>
+                    <h2>Localização</h2>
+                    <p>Venha nos visitar. Estamos esperando você!</p>
+                </div>
             </div>
-        </div>
+            <div class="info-card localizacao-card">
+                <div class="localizacao-info">
+                    <div class="localizacao-detalhe">
+                        <i class="fa-solid fa-map-pin" style="color: var(--primary);"></i>
+                        <div>
+                            <span class="localizacao-label">Endereço</span>
+                            <span class="localizacao-valor">Rua da Joel Cordeiro, 123 — Centro, Mossoró, RN</span>
+                        </div>
+                    </div>
+                    <div class="localizacao-detalhe">
+                        <i class="fa-solid fa-phone" style="color: var(--primary);"></i>
+                        <div>
+                            <span class="localizacao-label">Telefone</span>
+                            <span class="localizacao-valor"> (84) 99272-6598</span>
+                        </div>
+                    </div>
+                    <div class="localizacao-detalhe">
+                        <i class="fa-solid fa-parking" style="color: var(--primary);"></i>
+                        <div>
+                            <span class="localizacao-label">Estacionamento</span>
+                            <span class="localizacao-valor">Estacionamento gratuito no local</span>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
     </main>
 </div>
-<%- include("partials/footer") %>
+<%- include("partials/footer" ) %>
