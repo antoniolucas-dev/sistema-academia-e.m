@@ -8,5 +8,15 @@
     "alunosIds": [
       "1785884041329"
     ]
+  },
+  {
+    "id": "1785957129562",
+    "nome": "teste 2",
+    "categoria": "Boxe",
+    "duracao": 12,
+    "descricao": "",
+    "alunosIds": [
+      "1785884041329"
+    ]
   }
 ]

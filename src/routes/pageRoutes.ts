@@ -65,6 +65,79 @@ function montarHistoricoDoAluno(alunoId: string) {
     };
 }
 
+// Monta a grade de frequência dos últimos 7 dias (hoje incluso) de um aluno
+function montarFrequenciaSemana(alunoId: string) {
+    const diasComTreino = new Set(
+        conclusaoRepo.listarPorAluno(alunoId).map(c => new Date(c.data).toISOString().slice(0, 10))
+    );
+    const nomesDias = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+
+    const dias = [];
+    for (let i = 6; i >= 0; i--) {
+        const data = new Date();
+        data.setDate(data.getDate() - i);
+        const iso = data.toISOString().slice(0, 10);
+        dias.push({
+            label: nomesDias[data.getDay()],
+            treinou: diasComTreino.has(iso),
+            hoje: i === 0
+        });
+    }
+    return dias;
+}
+
+// Saudação de acordo com o horário atual
+function montarSaudacao(): string {
+    const hora = new Date().getHours();
+    if (hora < 12) return "Bom dia";
+    if (hora < 18) return "Boa tarde";
+    return "Boa noite";
+}
+
+// Treino que o aluno mais concluiu ao longo do tempo (cada ciclo marcar/desmarcar conta como uma vez)
+function montarTreinoFavorito(alunoId: string): { nome: string; vezes: number } | null {
+    const conclusoes = conclusaoRepo.listarPorAluno(alunoId);
+    if (conclusoes.length === 0) return null;
+
+    const contagem = new Map<string, number>();
+    conclusoes.forEach(c => contagem.set(c.treinoId, (contagem.get(c.treinoId) || 0) + 1));
+
+    let treinoIdFavorito = "";
+    let maiorContagem = 0;
+    contagem.forEach((vezes, treinoId) => {
+        if (vezes > maiorContagem) {
+            maiorContagem = vezes;
+            treinoIdFavorito = treinoId;
+        }
+    });
+
+    const treino = treinoRepo.buscarPorId(treinoIdFavorito);
+    return treino ? { nome: treino.nome, vezes: maiorContagem } : null;
+}
+
+// Último treino concluído pelo aluno (pra oferecer o atalho de repetir)
+function montarUltimoTreino(alunoId: string): { treino: any; aindaAtribuido: boolean; jaConcluidoAgora: boolean } | null {
+    const conclusoes = conclusaoRepo.listarPorAluno(alunoId).sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
+    const ultima = conclusoes[0];
+    if (!ultima) return null;
+
+    const treino = treinoRepo.buscarPorId(ultima.treinoId);
+    if (!treino) return null;
+
+    return {
+        treino,
+        aindaAtribuido: (treino.alunosIds || []).includes(alunoId),
+        jaConcluidoAgora: true // se ele está no histórico, está marcado como concluído nesse exato momento
+    };
+}
+
+// Agrupa treinos pendentes por categoria, com a contagem de cada uma
+function agruparPorCategoria(treinos: any[]): { categoria: string; quantidade: number }[] {
+    const contagem = new Map<string, number>();
+    treinos.forEach(t => contagem.set(t.categoria, (contagem.get(t.categoria) || 0) + 1));
+    return Array.from(contagem.entries()).map(([categoria, quantidade]) => ({ categoria, quantidade }));
+}
+
 // --- PÁGINAS PRINCIPAIS ---
 
 router.get("/", (req, res) => res.render("index"));
@@ -81,10 +154,14 @@ router.get("/cadastro", (req, res) => {
 });
 router.get("/dashboard", somenteLogado, (req, res) => {
     const usuario = req.session.usuario!;
+    const saudacao = montarSaudacao();
 
     // Admin/Professor: números gerais do sistema (calculados via /api/stats no front)
     if (usuario.tipo !== "Aluno") {
-        return res.render("dashboard", { meuAluno: null, proximoTreino: null, outrosPendentes: [] });
+        return res.render("dashboard", {
+            saudacao, meuAluno: null, proximoTreino: null, outrosPendentes: [],
+            frequenciaSemana: [], treinoFavorito: null, ultimoTreino: null, pendentesPorCategoria: []
+        });
     }
 
     // Aluno: o dashboard é uma tela de AÇÃO ("o que eu preciso fazer agora"),
@@ -93,6 +170,10 @@ router.get("/dashboard", somenteLogado, (req, res) => {
 
     let proximoTreino: any = null;
     let outrosPendentes: any[] = [];
+    let pendentesPorCategoria: { categoria: string; quantidade: number }[] = [];
+    let frequenciaSemana: any[] = [];
+    let treinoFavorito: { nome: string; vezes: number } | null = null;
+    let ultimoTreino: { treino: any; aindaAtribuido: boolean; jaConcluidoAgora: boolean } | null = null;
 
     if (meuAluno) {
         const todosTreinos = treinoRepo.listar();
@@ -102,11 +183,18 @@ router.get("/dashboard", somenteLogado, (req, res) => {
 
         proximoTreino = pendentes[0] || null;
         outrosPendentes = pendentes.slice(1);
+        pendentesPorCategoria = agruparPorCategoria(pendentes);
+
+        frequenciaSemana = montarFrequenciaSemana(meuAluno.id);
+        treinoFavorito = montarTreinoFavorito(meuAluno.id);
+        ultimoTreino = montarUltimoTreino(meuAluno.id);
     }
 
-    res.render("dashboard", { meuAluno, proximoTreino, outrosPendentes });
+    res.render("dashboard", {
+        saudacao, meuAluno, proximoTreino, outrosPendentes, pendentesPorCategoria,
+        frequenciaSemana, treinoFavorito, ultimoTreino
+    });
 });
-
 router.get("/informacoes", (req, res) => res.render("imformacoes"));
 router.get("/perfil", somenteLogado, (req, res) => {
     const usuario = req.session.usuario!;
@@ -300,6 +388,26 @@ router.get("/treinos/desmarcar/:id", somenteLogado, (req, res) => {
     }
 
     res.redirect("/treinos");
+});
+
+// Atalho do dashboard: registra uma nova conclusão do treino "de novo" (desmarca o registro
+// antigo e marca um novo, com a data de hoje) — útil pro aluno repetir o último treino feito
+router.get("/treinos/repetir/:id", somenteLogado, (req, res) => {
+    const usuario = req.session.usuario!;
+    const treinoId = String(req.params.id);
+
+    if (usuario.tipo === "Aluno") {
+        const meuAluno = alunoRepo.buscarPorUsuarioId(usuario.id);
+        const treino = treinoRepo.buscarPorId(treinoId);
+        const foiAtribuido = meuAluno && treino && (treino.alunosIds || []).includes(meuAluno.id);
+
+        if (meuAluno && foiAtribuido) {
+            conclusaoRepo.desmarcar(treinoId, meuAluno.id);
+            conclusaoRepo.marcar(treinoId, meuAluno.id);
+        }
+    }
+
+    res.redirect("/dashboard");
 });
 
 router.get("/treinos/novo", somenteGestor, (req, res) => {
