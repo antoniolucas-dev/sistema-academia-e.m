@@ -16,11 +16,11 @@ Este projeto foi desenvolvido como parte da disciplina de Informática, aplicand
 
 Recentemente, o sistema passou por uma grande atualização visual para melhorar a usabilidade:
 
-- 🚀 **Navegação Simplificada**: Remoção do painel lateral redundante em favor de uma **Navbar Superior** moderna e intuitiva.
-- 🎨 **Identidade Visual**: Adição de ícones semânticos em todas as abas de navegação e na logo principal.
-- 📱 **Design Responsivo**: Layout otimizado para diferentes tamanhos de tela, garantindo que o sistema seja utilizável em desktops e dispositivos móveis.
-- 🎯 **Foco na Experiência**: Centralização de formulários críticos (como a edição de perfil) para reduzir a carga cognitiva e melhorar o fluxo do usuário.
-- 🌗 **Dark Mode Nativo**: Interface otimizada para visualização em ambientes escuros, reduzindo a fadiga ocular.
+-  **Navegação Simplificada**: Remoção do painel lateral redundante em favor de uma **Navbar Superior** moderna e intuitiva.
+-  **Identidade Visual**: Adição de ícones semânticos em todas as abas de navegação e na logo principal.
+-  **Design Responsivo**: Layout otimizado para diferentes tamanhos de tela, garantindo que o sistema seja utilizável em desktops e dispositivos móveis.
+-  **Foco na Experiência**: Centralização de formulários críticos (como a edição de perfil) para reduzir a carga cognitiva e melhorar o fluxo do usuário.
+-  **Dark Mode Nativo**: Interface otimizada para visualização em ambientes escuros, reduzindo a fadiga ocular.
 
 ---
 
