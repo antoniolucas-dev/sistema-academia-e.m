@@ -25,5 +25,14 @@
     "tipo": "Aluno",
     "telefone": "",
     "foto": ""
+  },
+  {
+    "id": "1785947726812",
+    "nome": "Erick Felipe Rodrigues de Moura",
+    "email": "erickmoura1209@gmail.com",
+    "senha": "123456",
+    "tipo": "Administrador",
+    "telefone": "",
+    "foto": ""
   }
 ]
