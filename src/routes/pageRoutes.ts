@@ -15,6 +15,42 @@ const exercicioRepo = new ExercicioRepository();
 const usuarioRepo = new UsuarioRepository();
 const conclusaoRepo = new ConclusaoRepository();
 
+// Monta o histórico de treinos concluídos de um aluno, com dados do treino + estatísticas
+function montarHistoricoDoAluno(alunoId: string) {
+    const conclusoes = conclusaoRepo.listarPorAluno(alunoId);
+
+    const historico = conclusoes
+        .map(c => ({
+            treino: treinoRepo.buscarPorId(c.treinoId),
+            data: c.data
+        }))
+        .filter(item => item.treino) // ignora conclusões de treinos que já foram excluídos
+        .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
+
+    const agora = new Date();
+    const concluidosEsteMes = historico.filter(item => {
+        const d = new Date(item.data);
+        return d.getMonth() === agora.getMonth() && d.getFullYear() === agora.getFullYear();
+    }).length;
+
+    // Sequência atual: dias seguidos (contando hoje pra trás) com pelo menos 1 treino concluído
+    const diasComTreino = new Set(
+        historico.map(item => new Date(item.data).toISOString().slice(0, 10))
+    );
+
+    let sequenciaAtual = 0;
+    const cursor = new Date();
+    while (diasComTreino.has(cursor.toISOString().slice(0, 10))) {
+        sequenciaAtual++;
+        cursor.setDate(cursor.getDate() - 1);
+    }
+
+    return {
+        historico,
+        stats: { total: historico.length, esteMes: concluidosEsteMes, sequenciaAtual }
+    };
+}
+
 // --- PÁGINAS PRINCIPAIS ---
 
 router.get("/", (req, res) => res.render("index"));
@@ -34,7 +70,12 @@ router.get("/informacoes", (req, res) => res.render("imformacoes"));
 router.get("/perfil", somenteLogado, (req, res) => {
     const usuario = req.session.usuario!;
     const meuAluno = usuario.tipo === "Aluno" ? alunoRepo.buscarPorUsuarioId(usuario.id) : null;
-    res.render("perfil", { usuario, meuAluno });
+
+    const { historico, stats } = meuAluno
+        ? montarHistoricoDoAluno(meuAluno.id)
+        : { historico: [], stats: { total: 0, esteMes: 0, sequenciaAtual: 0 } };
+
+    res.render("perfil", { usuario, meuAluno, historico, stats });
 });
 
 router.get("/perfil/editar", somenteLogado, (req, res) => {
@@ -130,6 +171,15 @@ router.get("/alunos/excluir/:id", somenteGestor, (req, res) => {
     alunoRepo.remover(id);
     emitUpdate("aluno_deleted", { id });
     res.redirect("/alunos");
+});
+
+router.get("/alunos/:id/historico", somenteGestor, (req, res) => {
+    const aluno = alunoRepo.buscar(String(req.params.id));
+    if (!aluno) return res.redirect("/alunos");
+
+    const { historico, stats } = montarHistoricoDoAluno(aluno.id);
+
+    res.render("historico", { aluno, historico, stats });
 });
 
 // --- GESTÃO DE TREINOS ---

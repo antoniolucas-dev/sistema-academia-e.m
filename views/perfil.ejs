@@ -41,6 +41,66 @@
                 <% } %>
 
             </div>
+
+            <% if (meuAluno) { %>
+
+                <div class="dashboard-cards" style="margin-top: 1.5rem;">
+                    <div class="card">
+                        <i class="fa-solid fa-check-double card-icone"></i>
+                        <p class="estatistica-valor"><%= stats.total %></p>
+                        <p class="card-label">Treinos concluídos</p>
+                    </div>
+
+                    <div class="card">
+                        <i class="fa-solid fa-calendar-check card-icone"></i>
+                        <p class="estatistica-valor"><%= stats.esteMes %></p>
+                        <p class="card-label">Concluídos este mês</p>
+                    </div>
+
+                    <div class="card">
+                        <i class="fa-solid fa-fire card-icone"></i>
+                        <p class="estatistica-valor"><%= stats.sequenciaAtual %></p>
+                        <p class="card-label">Dias seguidos treinando</p>
+                    </div>
+                </div>
+
+                <div class="perfil-card" style="margin-top: 1.5rem;">
+
+                    <h2>Histórico de treinos concluídos</h2>
+
+                    <% if (historico.length > 0) { %>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Treino</th>
+                                    <th>Categoria</th>
+                                    <th>Duração</th>
+                                    <th>Concluído em</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% historico.forEach(item => { %>
+                                    <tr>
+                                        <td><%= item.treino.nome %></td>
+                                        <td><%= item.treino.categoria %></td>
+                                        <td><%= item.treino.duracao %> min</td>
+                                        <td><%= new Date(item.data).toLocaleString('pt-BR') %></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+
+                    <% } else { %>
+
+                        <p>Você ainda não concluiu nenhum treino. Bora começar? 💪</p>
+
+                    <% } %>
+
+                </div>
+
+            <% } %>
+
         <% } %>
 
     </main>
