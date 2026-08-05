@@ -6,55 +6,130 @@
         <div class="page-header">
             <div>
                 <h1>Dashboard</h1>
-                <p>Visão geral da academia em tempo real.</p>
+                <p>
+                    <% if (usuario && usuario.tipo === 'Aluno') { %>
+                        O que você precisa fazer hoje.
+                    <% } else { %>
+                        Visão geral da academia em tempo real.
+                    <% } %>
+                </p>
             </div>
             <div id="current-date" style="color: var(--text-muted);"></div>
         </div>
 
-        <div class="dashboard-cards">
-            <div class="card">
-                <i class="fa-solid fa-users card-icone"></i>
-                <p class="estatistica-valor" id="stat-alunos" data-valor-final="0">0</p>
-                <p class="card-label">Total de Alunos</p>
+        <% if (usuario && usuario.tipo === 'Aluno') { %>
+
+            <!-- Painel do Aluno: tela de ação ("o que fazer agora"). As estatísticas completas ficam em /perfil -->
+            <div class="perfil-header" style="margin-bottom: 1.5rem;">
+                <div class="perfil-info">
+                    <h1 style="margin-bottom: 0.25rem;">Olá, <%= usuario.nome.split(' ')[0] %>! 👋</h1>
+                    <% if (meuAluno) { %>
+                        <span class="badge-faixa"><%= meuAluno.faixa %></span>
+                    <% } %>
+                </div>
             </div>
 
-            <div class="card">
-                <i class="fa-solid fa-dumbbell card-icone"></i>
-                <p class="estatistica-valor" id="stat-treinos" data-valor-final="0">0</p>
-                <p class="card-label">Treinos Cadastrados</p>
-            </div>
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <h3 style="margin-bottom: 1rem;">
+                    <i class="fa-solid fa-bolt"></i>
+                    <%= proximoTreino ? 'Seu próximo treino' : 'Você está em dia' %>
+                </h3>
 
-            <div class="card">
-                <i class="fa-solid fa-person-running card-icone"></i>
-                <p class="estatistica-valor" id="stat-exercicios" data-valor-final="0">0</p>
-                <p class="card-label">Exercícios Cadastrados</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3 style="margin-bottom: 1rem;">Acesso rápido</h3>
-            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                <% if (usuario && usuario.tipo !== 'Aluno') { %>
-                    <a href="/alunos" class="btn"><i class="fa-solid fa-users"></i> Alunos</a>
+                <% if (proximoTreino) { %>
+                    <div class="treino-mini-card" style="margin-bottom: 1rem;">
+                        <span class="treino-nome"><%= proximoTreino.nome %></span>
+                        <span class="treino-categoria"><%= proximoTreino.categoria %></span>
+                        <span class="treino-duracao">
+                            <i class="fa-solid fa-clock"></i>
+                            <%= proximoTreino.duracao %> min
+                        </span>
+                    </div>
+                    <a href="/treinos/concluir/<%= proximoTreino.id %>?voltar=dashboard" class="btn">
+                        <i class="fa-solid fa-check"></i> Marcar como concluído
+                    </a>
+                <% } else if (!meuAluno) { %>
+                    <p style="color: var(--text-muted);">Seu usuário ainda não está vinculado a uma matrícula de aluno. Fale com a recepção.</p>
+                <% } else { %>
+                    <p style="color: var(--text-muted);">Você concluiu todos os treinos atribuídos. Bom trabalho! 🎉</p>
                 <% } %>
-                <a href="/treinos" class="btn"><i class="fa-solid fa-dumbbell"></i> Treinos</a>
-                <a href="/exercicios" class="btn"><i class="fa-solid fa-person-running"></i> Exercícios</a>
             </div>
-        </div>
+
+            <% if (outrosPendentes.length > 0) { %>
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">Outros treinos pendentes (<%= outrosPendentes.length %>)</h3>
+                <div class="proximo-treino-lista">
+                    <% outrosPendentes.forEach(treino => { %>
+                        <div class="treino-mini-card">
+                            <span class="treino-nome"><%= treino.nome %></span>
+                            <span class="treino-categoria"><%= treino.categoria %></span>
+                            <span class="treino-duracao">
+                                <i class="fa-solid fa-clock"></i>
+                                <%= treino.duracao %> min
+                            </span>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+            <% } %>
+
+            <div class="card" style="margin-top: 1.5rem;">
+                <h3 style="margin-bottom: 1rem;">Acesso rápido</h3>
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <a href="/treinos" class="btn"><i class="fa-solid fa-dumbbell"></i> Meus Treinos</a>
+                    <a href="/exercicios" class="btn"><i class="fa-solid fa-person-running"></i> Exercícios</a>
+                    <a href="/perfil" class="btn"><i class="fa-solid fa-chart-bar"></i> Ver meu progresso completo</a>
+                </div>
+            </div>
+
+        <% } else { %>
+
+            <!-- Painel do Professor/Administrador: visão geral do sistema -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <i class="fa-solid fa-users card-icone"></i>
+                    <p class="estatistica-valor" id="stat-alunos" data-valor-final="0">0</p>
+                    <p class="card-label">Total de Alunos</p>
+                </div>
+
+                <div class="card">
+                    <i class="fa-solid fa-dumbbell card-icone"></i>
+                    <p class="estatistica-valor" id="stat-treinos" data-valor-final="0">0</p>
+                    <p class="card-label">Treinos Cadastrados</p>
+                </div>
+
+                <div class="card">
+                    <i class="fa-solid fa-person-running card-icone"></i>
+                    <p class="estatistica-valor" id="stat-exercicios" data-valor-final="0">0</p>
+                    <p class="card-label">Exercícios Cadastrados</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">Acesso rápido</h3>
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <a href="/alunos" class="btn"><i class="fa-solid fa-users"></i> Alunos</a>
+                    <a href="/treinos" class="btn"><i class="fa-solid fa-dumbbell"></i> Treinos</a>
+                    <a href="/exercicios" class="btn"><i class="fa-solid fa-person-running"></i> Exercícios</a>
+                </div>
+            </div>
+
+            <script>
+                fetch('/api/stats')
+                    .then(function (resposta) { return resposta.json(); })
+                    .then(function (dados) {
+                        document.getElementById('stat-alunos').textContent = dados.totalAlunos;
+                        document.getElementById('stat-treinos').textContent = dados.totalTreinos;
+                        document.getElementById('stat-exercicios').textContent = dados.totalExercicios;
+                    })
+                    .catch(function (erro) { console.error('Não foi possível carregar as estatísticas:', erro); });
+            </script>
+
+        <% } %>
     </main>
 </div>
 <script>
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('pt-BR', {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
-
-    fetch('/api/stats')
-        .then(function (resposta) { return resposta.json(); })
-        .then(function (dados) {
-            document.getElementById('stat-alunos').textContent = dados.totalAlunos;
-            document.getElementById('stat-treinos').textContent = dados.totalTreinos;
-            document.getElementById('stat-exercicios').textContent = dados.totalExercicios;
-        })
-        .catch(function (erro) { console.error('Não foi possível carregar as estatísticas:', erro); });
 </script>
 <%- include("partials/footer") %>

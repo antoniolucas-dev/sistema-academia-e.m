@@ -79,7 +79,34 @@ router.get("/cadastro", (req, res) => {
         erro: req.query.erro || null
     });
 });
-router.get("/dashboard", somenteLogado, (req, res) => res.render("dashboard"));
+router.get("/dashboard", somenteLogado, (req, res) => {
+    const usuario = req.session.usuario!;
+
+    // Admin/Professor: números gerais do sistema (calculados via /api/stats no front)
+    if (usuario.tipo !== "Aluno") {
+        return res.render("dashboard", { meuAluno: null, proximoTreino: null, outrosPendentes: [] });
+    }
+
+    // Aluno: o dashboard é uma tela de AÇÃO ("o que eu preciso fazer agora"),
+    // não repete as estatísticas completas que já vivem em /perfil
+    const meuAluno = alunoRepo.buscarPorUsuarioId(usuario.id) || null;
+
+    let proximoTreino: any = null;
+    let outrosPendentes: any[] = [];
+
+    if (meuAluno) {
+        const todosTreinos = treinoRepo.listar();
+        const atribuidos = todosTreinos.filter(t => (t.alunosIds || []).includes(meuAluno.id));
+        const concluidoIds = conclusaoRepo.listarPorAluno(meuAluno.id).map(c => c.treinoId);
+        const pendentes = atribuidos.filter(t => !concluidoIds.includes(t.id));
+
+        proximoTreino = pendentes[0] || null;
+        outrosPendentes = pendentes.slice(1);
+    }
+
+    res.render("dashboard", { meuAluno, proximoTreino, outrosPendentes });
+});
+
 router.get("/informacoes", (req, res) => res.render("imformacoes"));
 router.get("/perfil", somenteLogado, (req, res) => {
     const usuario = req.session.usuario!;
@@ -95,7 +122,7 @@ router.get("/perfil", somenteLogado, (req, res) => {
 
     if (meuAluno) {
         const todosTreinos = treinoRepo.listar();
-        treinosAtribuidos = todosTreinos.filter(t => (t.alunosIds || []).includes(meuAluno.id));
+        treinosAtribuidos = todosTreinos.filter(t => (t.alunosIds || []).includes(meuAluno!.id));
         treinConcluidoIds = conclusaoRepo.listarPorAluno(meuAluno.id).map(c => c.treinoId);
     }
 
@@ -134,8 +161,8 @@ router.post("/perfil/salvar", somenteLogado, (req, res) => {
     });
 });
 
-// API para o Dashboard atualizar os números em tempo real
-router.get("/api/stats", (req, res) => {
+// API para o Dashboard atualizar os números em tempo real (só Prof/Admin usam essa visão)
+router.get("/api/stats", somenteGestor, (req, res) => {
     res.json({
         totalAlunos: alunoRepo.listar().length,
         totalTreinos: treinoRepo.listar().length,
@@ -257,7 +284,8 @@ router.get("/treinos/concluir/:id", somenteLogado, (req, res) => {
         }
     }
 
-    res.redirect("/treinos");
+    // Se a ação veio do dashboard (botão "marcar como concluído" do próximo treino), volta pra lá
+    res.redirect(req.query.voltar === "dashboard" ? "/dashboard" : "/treinos");
 });
 
 router.get("/treinos/desmarcar/:id", somenteLogado, (req, res) => {
