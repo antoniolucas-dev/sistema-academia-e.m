@@ -135,7 +135,7 @@ npm start
 
 ---
 
-## 🧪 Testes
+## Testes
 
 Executar todos os testes:
 
