@@ -174,8 +174,10 @@ Este projeto foi desenvolvido como atividade acadêmica para colocar em prática
 
 ## Desenvolvedores
 
+- André Fernandes
 - Antonio Lucas
-- Equipe Academia E.M.
+- Erick Felipe
+- Matheus Felipe
 
 ---
 
