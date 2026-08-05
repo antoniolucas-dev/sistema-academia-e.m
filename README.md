@@ -1,75 +1,184 @@
-# 🏋️‍♂️ Academia E.M - Sistema de Gestão Fitness
+# 🏋️ Academia E.M.
 
-![Status do Projeto](https://img.shields.io/badge/Status-Conclu%C3%ADdo-brightgreen )
-![Node.js](https://img.shields.io/badge/Node.js-18%2B-blue )
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue )
-![Express](https://img.shields.io/badge/Express-4.18-lightgrey )
-![MVC](https://img.shields.io/badge/Arquitetura-MVC-orange )
+> Sistema web para gerenciamento de academia desenvolvido com **Node.js**, **Express**, **TypeScript** e **EJS**.
 
-O **Academia E.M** é uma plataforma web moderna desenvolvida para o gerenciamento completo de academias. O sistema permite o controle eficiente de alunos, treinos e exercícios, oferecendo uma experiência fluida tanto para administradores quanto para alunos.
-
-Este projeto foi desenvolvido como parte da disciplina de Informática, aplicando conceitos avançados de **Node.js**, **TypeScript** e o padrão arquitetural **MVC**.
+![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?logo=express&logoColor=white)
+![EJS](https://img.shields.io/badge/EJS-8BC34A)
+![License](https://img.shields.io/badge/License-Acadêmico-blue)
 
 ---
 
-## ✨ Novidades da Versão 2.0 (Refatoração de UI)
+## Sobre
 
-Recentemente, o sistema passou por uma grande atualização visual para melhorar a usabilidade:
-
--  **Navegação Simplificada**: Remoção do painel lateral redundante em favor de uma **Navbar Superior** moderna e intuitiva.
--  **Identidade Visual**: Adição de ícones semânticos em todas as abas de navegação e na logo principal.
--  **Design Responsivo**: Layout otimizado para diferentes tamanhos de tela, garantindo que o sistema seja utilizável em desktops e dispositivos móveis.
--  **Foco na Experiência**: Centralização de formulários críticos (como a edição de perfil) para reduzir a carga cognitiva e melhorar o fluxo do usuário.
--  **Dark Mode Nativo**: Interface otimizada para visualização em ambientes escuros, reduzindo a fadiga ocular.
+O **Academia E.M.** é um sistema desenvolvido para auxiliar no gerenciamento de uma academia. O projeto foi criado para fins acadêmicos, aplicando conceitos de desenvolvimento web com arquitetura MVC, autenticação por sessão, manipulação de arquivos JSON e testes automatizados.
 
 ---
 
-## 🛠️ Funcionalidades Principais
+## Funcionalidades
 
-| Módulo | Descrição |
-| :--- | :--- |
-| **Segurança** | Sistema de login robusto com autenticação baseada em sessões. |
-| **Dashboard** | Visão geral em tempo real com estatísticas de alunos e treinos. |
-| **Gestão de Alunos** | Cadastro completo, incluindo upload de foto e controle de progresso. |
-| **Treinos & Exercícios** | CRUD completo com atribuição dinâmica de treinos para alunos. |
-| **Perfil do Usuário** | Edição de dados pessoais, troca de foto e definição de metas mensais. |
-| **Informações** | Espaço dedicado a detalhes da academia, horários e planos. |
-
----
-
-## 🚀 Tecnologias Utilizadas
-
-### **Backend**
-- **Runtime:** Node.js
-- **Framework:** Express.js
-- **Linguagem:** TypeScript
-- **Segurança:** Express Session
-- **Uploads:** Multer
-- **Testes:** Jest
-
-### **Frontend**
-- **Template Engine:** EJS
-- **Estilização:** CSS3 (Variáveis, Flexbox, Grid)
-- **Ícones:** Font Awesome 6
-- **Tipografia:** Poppins (Google Fonts)
+- Login de usuários
+- Gerenciamento de alunos
+- Gerenciamento de exercícios
+- Gerenciamento de treinos
+- Dashboard
+- Página de perfil
+- ℹPágina de informações
+- Modo escuro
+- Upload de arquivos
+- Testes automatizados
 
 ---
 
-## 📂 Estrutura do Projeto
+## Tecnologias
 
-O projeto utiliza o padrão **MVC** com **Repository Pattern** para garantir código limpo e manutenível:
+### Backend
+
+- Node.js
+- Express
+- TypeScript
+- Express Session
+- Multer
+- Socket.IO
+- UUID
+
+### Frontend
+
+- EJS
+- HTML5
+- CSS3
+- JavaScript
+
+### Testes
+
+- Jest
+- Supertest
+
+---
+
+## Estrutura do projeto
+
+```text
+academia-em
+│
+├── dados/
+│   ├── alunos.json
+│   ├── exercicios.json
+│   ├── treinos.json
+│   ├── usuarios.json
+│   └── conclusoes.json
+│
+├── public/
+│   ├── css/
+│   ├── img/
+│   ├── js/
+│   └── uploads/
+│
+├── src/
+│   ├── entities/
+│   ├── middlewares/
+│   ├── models/
+│   ├── routes/
+│   ├── views/
+│   ├── server.ts
+│   └── app.ts
+│
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+---
+
+## Instalação
+
+Clone o repositório:
 
 ```bash
-sistema-academia/
-├── src/
-│   ├── entities/      # Definição das classes e tipos
-│   ├── models/        # Lógica de negócio e acesso a dados (JSON)
-│   ├── routes/        # Definição dos endpoints
-│   ├── middlewares/   # Filtros de autenticação e upload
-│   ├── views/         # Templates EJS (Interface)
-│   └── app.ts         # Configuração da aplicação
-├── public/
-│   ├── css/           # Estilos (incluindo fix-global.css)
-│   ├── js/            # Scripts frontend
-│   └── uploads/       # Fotos de perfil dos usuários
-└── dados/             # Persistência em arquivos JSON
+git clone https://github.com/antoniolucas-dev/sistema-academia-e.m.git
+```
+
+Entre na pasta:
+
+```bash
+cd sistema-academia-e.m
+```
+
+Instale as dependências:
+
+```bash
+npm install
+```
+
+---
+
+## Executando
+
+Modo de desenvolvimento:
+
+```bash
+npm run dev
+```
+
+Compilar:
+
+```bash
+npm run build
+```
+
+Executar versão compilada:
+
+```bash
+npm start
+```
+
+---
+
+## 🧪 Testes
+
+Executar todos os testes:
+
+```bash
+npm test
+```
+
+---
+
+## Arquitetura
+
+O projeto utiliza o padrão **MVC (Model-View-Controller)** para separar responsabilidades.
+
+- **Models:** acesso aos dados e regras de negócio.
+- **Views:** páginas renderizadas em EJS.
+- **Routes:** gerenciamento das rotas.
+- **Middlewares:** autenticação e validações.
+- **Entities:** representação das entidades do sistema.
+
+---
+
+## Objetivo
+
+Este projeto foi desenvolvido como atividade acadêmica para colocar em prática conhecimentos de:
+
+- Desenvolvimento Web
+- Node.js
+- Express
+- TypeScript
+- Arquitetura MVC
+- Sessões
+- Upload de arquivos
+- Testes automatizados
+
+---
+
+## Desenvolvedores
+
+- Antonio Lucas
+- Equipe Academia E.M.
+
+---
+
+## Licença
+
+Projeto desenvolvido exclusivamente para fins acadêmicos.
