@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": "1785950345808",
+    "nome": "teste",
+    "categoria": "Muay Thai",
+    "duracao": 10,
+    "descricao": "",
+    "alunosIds": [
+      "1785884041329"
+    ]
+  }
+]

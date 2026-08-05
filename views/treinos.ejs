@@ -37,8 +37,10 @@
                     <th>Duração</th>
                     <% if (usuario && usuario.tipo !== 'Aluno') { %>
                         <th>Atribuído a</th>
+                        <th>Ações</th>
+                    <% } else { %>
+                        <th>Status</th>
                     <% } %>
-                    <th>Ações</th>
                 </tr>
 
             </thead>
@@ -58,22 +60,21 @@
                             <td><span class="treino-duracao"><%= treino.duracao %> min</span></td>
 
                             <% if (usuario && usuario.tipo !== 'Aluno') { %>
+
                                 <td>
                                     <% const idsAtribuidos = treino.alunosIds || []; %>
                                     <% if (idsAtribuidos.length > 0) { %>
                                         <span class="treino-duracao">
                                             <%= idsAtribuidos.length %>
                                             <%= idsAtribuidos.length === 1 ? 'aluno' : 'alunos' %>
+                                            (<%= totalConcluidosPorTreino[treino.id] || 0 %> concluíram)
                                         </span>
                                     <% } else { %>
                                         <span class="treino-duracao">Ninguém ainda</span>
                                     <% } %>
                                 </td>
-                            <% } %>
 
-                            <td>
-
-                                <% if (usuario && usuario.tipo !== 'Aluno') { %>
+                                <td>
                                     <div class="acoes-container">
                                         <a href="/treinos/editar/<%= treino.id %>" class="btn-edit">
                                             Editar
@@ -83,9 +84,29 @@
                                             Excluir
                                         </a>
                                     </div>
-                                <% } %>
+                                </td>
 
-                            </td>
+                            <% } else { %>
+
+                                <td>
+                                    <% const concluido = concluidosIds.includes(treino.id); %>
+                                    <% if (concluido) { %>
+                                        <div class="acoes-container">
+                                            <span class="badge" style="background: var(--success-soft); color: var(--success);">
+                                                Concluído
+                                            </span>
+                                            <a href="/treinos/desmarcar/<%= treino.id %>" class="btn-edit">
+                                                Desmarcar
+                                            </a>
+                                        </div>
+                                    <% } else { %>
+                                        <a href="/treinos/concluir/<%= treino.id %>" class="btn">
+                                            Marcar como concluído
+                                        </a>
+                                    <% } %>
+                                </td>
+
+                            <% } %>
 
                         </tr>
 

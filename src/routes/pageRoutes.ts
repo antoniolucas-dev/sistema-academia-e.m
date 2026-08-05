@@ -3,6 +3,7 @@ import { AlunoRepository } from "../models/AlunoRepository";
 import { TreinoRepository } from "../models/TreinoRepository";
 import { ExercicioRepository } from "../models/ExercicioRepository";
 import { UsuarioRepository } from "../models/UsuarioRepository";
+import { ConclusaoRepository } from "../models/ConclusaoRepository";
 import { emitUpdate } from "../socket";
 import { somenteLogado, somenteGestor } from "../middlewares/auth";
 import uploadPerfil from "../middlewares/uploadPerfil";
@@ -12,6 +13,7 @@ const alunoRepo = new AlunoRepository();
 const treinoRepo = new TreinoRepository();
 const exercicioRepo = new ExercicioRepository();
 const usuarioRepo = new UsuarioRepository();
+const conclusaoRepo = new ConclusaoRepository();
 
 // --- PÁGINAS PRINCIPAIS ---
 
@@ -145,15 +147,57 @@ router.get("/treinos", somenteLogado, (req, res) => {
 
     let treinos = todosTreinos;
     let meuAluno = null;
+    let concluidosIds: string[] = [];
+    let totalConcluidosPorTreino: Record<string, number> = {};
 
     if (usuario.tipo === "Aluno") {
         meuAluno = alunoRepo.buscarPorUsuarioId(usuario.id) || null;
         treinos = meuAluno
             ? todosTreinos.filter(t => (t.alunosIds || []).includes(meuAluno!.id))
             : [];
+
+        if (meuAluno) {
+            concluidosIds = conclusaoRepo.listarPorAluno(meuAluno.id).map(c => c.treinoId);
+        }
+    } else {
+        // Admin/Professor: quantos alunos já concluíram cada treino
+        todosTreinos.forEach(t => {
+            totalConcluidosPorTreino[t.id] = conclusaoRepo.listarPorTreino(t.id).length;
+        });
     }
 
-    res.render("treinos", { treinos, alunos, meuAluno });
+    res.render("treinos", { treinos, alunos, meuAluno, concluidosIds, totalConcluidosPorTreino });
+});
+
+router.get("/treinos/concluir/:id", somenteLogado, (req, res) => {
+    const usuario = req.session.usuario!;
+    const treinoId = String(req.params.id);
+
+    if (usuario.tipo === "Aluno") {
+        const meuAluno = alunoRepo.buscarPorUsuarioId(usuario.id);
+        const treino = treinoRepo.buscarPorId(treinoId);
+        const foiAtribuido = meuAluno && treino && (treino.alunosIds || []).includes(meuAluno.id);
+
+        if (meuAluno && foiAtribuido) {
+            conclusaoRepo.marcar(treinoId, meuAluno.id);
+        }
+    }
+
+    res.redirect("/treinos");
+});
+
+router.get("/treinos/desmarcar/:id", somenteLogado, (req, res) => {
+    const usuario = req.session.usuario!;
+    const treinoId = String(req.params.id);
+
+    if (usuario.tipo === "Aluno") {
+        const meuAluno = alunoRepo.buscarPorUsuarioId(usuario.id);
+        if (meuAluno) {
+            conclusaoRepo.desmarcar(treinoId, meuAluno.id);
+        }
+    }
+
+    res.redirect("/treinos");
 });
 
 router.get("/treinos/novo", somenteGestor, (req, res) => {
@@ -184,6 +228,8 @@ router.post("/treinos/salvar", somenteGestor, (req, res) => {
 router.get("/treinos/excluir/:id", somenteGestor, (req, res) => {
     const id = String(req.params.id);
     treinoRepo.remover(id);
+    // remove também os registros de conclusão órfãos desse treino
+    conclusaoRepo.listarPorTreino(id).forEach(c => conclusaoRepo.desmarcar(c.treinoId, c.alunoId));
     emitUpdate("treino_deleted", { id });
     res.redirect("/treinos");
 });
