@@ -43,5 +43,14 @@
     "tipo": "Administrador",
     "telefone": "",
     "foto": ""
+  },
+  {
+    "id": "1785949321983",
+    "nome": "Andre Fernandes Melo da Silva",
+    "email": "andrefern445@gamil.com",
+    "senha": "123456",
+    "tipo": "Administrador",
+    "telefone": "",
+    "foto": ""
   }
 ]
