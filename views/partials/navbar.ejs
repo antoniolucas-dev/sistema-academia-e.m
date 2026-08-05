@@ -1,43 +1,24 @@
 <nav class="navbar">
-
     <div class="logo">
+        <i class="fa-solid fa-dumbbell" style="color: var(--primary); margin-right: 8px;"></i>
         Academia E.M
     </div>
-
     <ul>
-
-        <li>
-            <a href="/">Home</a>
-        </li>
-        <li>
-            <a href="/dashboard">Dashboard</a>
-        </li>
+        <li><a href="/"><i class="fa-solid fa-home"></i> <span>Home</span></a></li>
+        <li><a href="/dashboard"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></a></li>
         <% if (usuario && usuario.tipo !== 'Aluno') { %>
-            <li>
-                <a href="/alunos">Alunos</a>
-            </li>
+            <li><a href="/alunos"><i class="fa-solid fa-users"></i> <span>Alunos</span></a></li>
         <% } %>
-        <li>
-            <a href="/treinos">Treinos</a>
-        </li>
-        <li>
-            <a href="/exercicios">Exercícios</a>
-        </li>
-        <li>
-            <a href="/perfil">Perfil</a>
-        </li>
-        <li>
-            <a href="/login">Sair</a>
-        </li>
-        <li>
-            <a href="/informacoes">Informações</a>
-        </li>
-        <!-- Toggle de tema -->
+        <li><a href="/treinos"><i class="fa-solid fa-dumbbell"></i> <span>Treinos</span></a></li>
+        <li><a href="/exercicios"><i class="fa-solid fa-person-running"></i> <span>Exercícios</span></a></li>
+        <li><a href="/perfil"><i class="fa-solid fa-user"></i> <span>Perfil</span></a></li>
+        <li><a href="/informacoes"><i class="fa-solid fa-circle-info"></i> <span>Informações</span></a></li>
+        <li class="navbar-separator"></li>
         <li>
             <button id="toggleTema" class="btn-tema" title="Alternar tema">
                 <i class="fa-solid fa-moon" id="iconeTema"></i>
             </button>
         </li>
+        <li><a href="/login" title="Sair"><i class="fa-solid fa-sign-out-alt"></i> <span>Sair</span></a></li>
     </ul>
-
 </nav>

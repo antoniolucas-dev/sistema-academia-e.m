@@ -101,17 +101,17 @@ img {
   background: #3a3a3a;
 }
 
-/* ---------- Layout principal (navbar + sidebar + conteúdo) ---------- */
+/* Layout principal atualizado para Largura Total */
 .container {
   display: flex;
-  align-items: flex-start;
-  min-height: calc(100vh - var(--navbar-height));
+  width: 100%;
+  min-height: calc(100vh - 70px);
 }
 
 .content {
   flex: 1;
-  min-width: 0;
-  padding: 2.5rem clamp(1.25rem, 3vw, 3rem);
+  width: 100%;
+  padding: 2rem;
 }
 
 .page-header {
