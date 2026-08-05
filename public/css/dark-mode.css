@@ -1,0 +1,105 @@
+/* ============================================================
+   DARK MODE — Variáveis de tema claro + transição suave
+   ============================================================ */
+
+/* Tema claro (ativado quando o body tem a classe .light-theme) */
+body.light-theme {
+  --bg-dark: #f4f4f5;
+  --bg-sidebar: #e8e8ec;
+  --bg-card: #ffffff;
+  --bg-input: #f0f0f2;
+
+  --text-main: #18181b;
+  --text-muted: #52525b;
+  --text-faint: #a1a1aa;
+
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.14);
+
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Transição suave em todas as superfícies */
+body,
+body.light-theme * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Ajustes específicos para inputs no tema claro */
+body.light-theme input,
+body.light-theme select,
+body.light-theme textarea {
+  background: var(--bg-input);
+  color: var(--text-main);
+  border-color: var(--border);
+}
+
+body.light-theme input:focus,
+body.light-theme select:focus,
+body.light-theme textarea:focus {
+  border-color: var(--primary);
+}
+
+/* Ajuste do card de treino mini no tema claro */
+body.light-theme .treino-mini-card {
+  background: var(--bg-input);
+  border-color: var(--border);
+}
+
+/* Ajuste da timeline no tema claro */
+body.light-theme .timeline::before {
+  background: var(--border);
+}
+
+body.light-theme .timeline-item {
+  background: var(--bg-card);
+  border-color: var(--border);
+}
+
+/* Ajuste do header do perfil no tema claro */
+body.light-theme .perfil-header {
+  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(225, 29, 72, 0.04) 100%);
+}
+
+/* Ajuste do placeholder da foto no tema claro */
+body.light-theme .perfil-foto-placeholder {
+  background: var(--primary-soft);
+}
+
+/* Ajuste de alertas no tema claro */
+body.light-theme .alerta {
+  border-color: var(--border-strong);
+}
+
+/* Ajuste do botão "btn-edit" no tema claro */
+body.light-theme .btn-edit {
+  background: var(--bg-input);
+  color: var(--text-main);
+  border-color: var(--border);
+}
+
+/* Ajuste da barra de progresso no tema claro */
+body.light-theme .progresso-barra-container {
+  background: var(--bg-input);
+}
+
+/* Ajuste da sidebar no tema claro */
+body.light-theme .sidebar {
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+}
+
+body.light-theme .sidebar a {
+  color: var(--text-muted);
+}
+
+body.light-theme .sidebar a:hover,
+body.light-theme .sidebar a.active {
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+/* Ajuste do placeholder de foto no upload */
+body.light-theme .foto-preview {
+  border-color: var(--border-strong);
+}

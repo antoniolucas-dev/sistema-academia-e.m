@@ -8,3 +8,32 @@
         if (typeof addRecentActivity === 'function') addRecentActivity(data.event, data.data);
     });
 </script>
+
+<!-- Script de toggle de tema (global) -->
+<script>
+    (function() {
+        const btn = document.getElementById('toggleTema');
+        const icone = document.getElementById('iconeTema');
+        const body = document.body;
+        const htmlEl = document.documentElement;
+
+        // Carrega o tema salvo
+        const temaSalvo = localStorage.getItem('tema');
+        if (temaSalvo === 'light') {
+            body.classList.add('light-theme');
+            if (icone) icone.className = 'fa-solid fa-sun';
+        }
+
+        htmlEl.classList.remove('ready-light');
+
+        if (btn) {
+            btn.addEventListener('click', function() {
+                const isLight = body.classList.toggle('light-theme');
+                if (icone) {
+                    icone.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+                }
+                localStorage.setItem('tema', isLight ? 'light' : 'dark');
+            });
+        }
+    })();
+</script>

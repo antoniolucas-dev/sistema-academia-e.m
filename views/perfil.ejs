@@ -93,6 +93,17 @@
             </div>
             <% } %>
 
+            <!-- Gráfico de Evolução Mensal -->
+            <div class="perfil-section">
+                <h2 class="perfil-section-title">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Evolução Mensal
+                </h2>
+                <div class="grafico-container">
+                    <canvas id="graficoEvolucao"></canvas>
+                </div>
+            </div>
+
             <div class="perfil-section">
                 <h2 class="perfil-section-title">
                     <i class="fa-solid fa-id-card"></i>
@@ -231,5 +242,69 @@
     </main>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    // Gráfico de Evolução Mensal
+    (function( ) {
+        const dados = JSON.parse('<%- typeof graficoMeses !== "undefined" ? graficoMeses : "[]" %>');
+        const canvas = document.getElementById('graficoEvolucao');
+        if (!canvas || !dados || dados.length === 0) return;
+
+        const isLight = document.body.classList.contains('light-theme');
+        const gridColor = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
+        const labelColor = isLight ? '#52525b' : '#a1a1aa';
+
+        new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels: dados.map(d => d.mes),
+                datasets: [{
+                    label: 'Treinos concluídos',
+                    data: dados.map(d => d.quantidade),
+                    backgroundColor: 'rgba(225, 29, 72, 0.7)',
+                    borderColor: '#e11d48',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: labelColor,
+                            stepSize: 1,
+                            font: { family: 'Poppins', size: 12 }
+                        },
+                        grid: { color: gridColor }
+                    },
+                    x: {
+                        ticks: {
+                            color: labelColor,
+                            font: { family: 'Poppins', size: 12 }
+                        },
+                        grid: { display: false }
+                    }
+                },
+                layout: {
+                    padding: { top: 10, bottom: 10 }
+                },
+                animation: {
+                    duration: 600,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+    })();
+</script>
 
 <%- include("partials/footer") %>

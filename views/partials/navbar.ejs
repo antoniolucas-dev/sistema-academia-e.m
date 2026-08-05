@@ -9,35 +9,34 @@
         <li>
             <a href="/">Home</a>
         </li>
-
         <li>
             <a href="/dashboard">Dashboard</a>
         </li>
-
         <% if (usuario && usuario.tipo !== 'Aluno') { %>
             <li>
                 <a href="/alunos">Alunos</a>
             </li>
         <% } %>
-
         <li>
             <a href="/treinos">Treinos</a>
         </li>
-
         <li>
             <a href="/exercicios">Exercícios</a>
         </li>
-
         <li>
             <a href="/perfil">Perfil</a>
         </li>
-
         <li>
             <a href="/login">Sair</a>
         </li>
-
         <li>
             <a href="/informacoes">Informações</a>
+        </li>
+        <!-- Toggle de tema -->
+        <li>
+            <button id="toggleTema" class="btn-tema" title="Alternar tema">
+                <i class="fa-solid fa-moon" id="iconeTema"></i>
+            </button>
         </li>
     </ul>
 

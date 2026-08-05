@@ -53,6 +53,21 @@ function montarHistoricoDoAluno(alunoId: string, metaMensal?: number) {
         })
     );
 
+    // Gráfico de evolução mensal: últimos 6 meses
+    const nomesMeses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const graficoMeses: { mes: string; quantidade: number }[] = [];
+    const agora2 = new Date();
+    for (let i = 5; i >= 0; i--) {
+        const dataRef = new Date(agora2.getFullYear(), agora2.getMonth() - i, 1);
+        const ano = dataRef.getFullYear();
+        const mes = dataRef.getMonth();
+        const qtde = historico.filter(item => {
+            const d = new Date(item.data);
+            return d.getMonth() === mes && d.getFullYear() === ano;
+        }).length;
+        graficoMeses.push({ mes: nomesMeses[mes], quantidade: qtde });
+    }
+
     return {
         historico,
         stats: {
@@ -60,8 +75,9 @@ function montarHistoricoDoAluno(alunoId: string, metaMensal?: number) {
             esteMes: concluidosEsteMes,
             sequenciaAtual,
             totalMesesAtivos: mesesAtivos.size,
-            metaMensal: metaMensal || 12 // Usa a meta do usuário ou padrão de 12
-        }
+            metaMensal: metaMensal || 12
+        },
+        graficoMeses
     };
 }
 
@@ -94,7 +110,7 @@ function montarSaudacao(): string {
     return "Boa noite";
 }
 
-// Treino que o aluno mais concluiu ao longo do tempo (cada ciclo marcar/desmarcar conta como uma vez)
+// Treino que o aluno mais concluiu ao longo do tempo
 function montarTreinoFavorito(alunoId: string): { nome: string; vezes: number } | null {
     const conclusoes = conclusaoRepo.listarPorAluno(alunoId);
     if (conclusoes.length === 0) return null;
@@ -115,7 +131,7 @@ function montarTreinoFavorito(alunoId: string): { nome: string; vezes: number } 
     return treino ? { nome: treino.nome, vezes: maiorContagem } : null;
 }
 
-// Último treino concluído pelo aluno (pra oferecer o atalho de repetir)
+// Último treino concluído pelo aluno
 function montarUltimoTreino(alunoId: string): { treino: any; aindaAtribuido: boolean; jaConcluidoAgora: boolean } | null {
     const conclusoes = conclusaoRepo.listarPorAluno(alunoId).sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
     const ultima = conclusoes[0];
@@ -127,11 +143,11 @@ function montarUltimoTreino(alunoId: string): { treino: any; aindaAtribuido: boo
     return {
         treino,
         aindaAtribuido: (treino.alunosIds || []).includes(alunoId),
-        jaConcluidoAgora: true // se ele está no histórico, está marcado como concluído nesse exato momento
+        jaConcluidoAgora: true
     };
 }
 
-// Agrupa treinos pendentes por categoria, com a contagem de cada uma
+// Agrupa treinos pendentes por categoria
 function agruparPorCategoria(treinos: any[]): { categoria: string; quantidade: number }[] {
     const contagem = new Map<string, number>();
     treinos.forEach(t => contagem.set(t.categoria, (contagem.get(t.categoria) || 0) + 1));
@@ -156,7 +172,6 @@ router.get("/dashboard", somenteLogado, (req, res) => {
     const usuario = req.session.usuario!;
     const saudacao = montarSaudacao();
 
-    // Admin/Professor: números gerais do sistema (calculados via /api/stats no front)
     if (usuario.tipo !== "Aluno") {
         return res.render("dashboard", {
             saudacao, meuAluno: null, proximoTreino: null, outrosPendentes: [],
@@ -164,8 +179,6 @@ router.get("/dashboard", somenteLogado, (req, res) => {
         });
     }
 
-    // Aluno: o dashboard é uma tela de AÇÃO ("o que eu preciso fazer agora"),
-    // não repete as estatísticas completas que já vivem em /perfil
     const meuAluno = alunoRepo.buscarPorUsuarioId(usuario.id) || null;
 
     let proximoTreino: any = null;
@@ -200,9 +213,9 @@ router.get("/perfil", somenteLogado, (req, res) => {
     const usuario = req.session.usuario!;
     const meuAluno = usuario.tipo === "Aluno" ? alunoRepo.buscarPorUsuarioId(usuario.id) : null;
 
-    const { historico, stats } = meuAluno
+    const { historico, stats, graficoMeses } = meuAluno
         ? montarHistoricoDoAluno(meuAluno.id, usuario.metaMensal)
-        : { historico: [], stats: { total: 0, esteMes: 0, sequenciaAtual: 0, totalMesesAtivos: 0, metaMensal: usuario.metaMensal || 0 } };
+        : { historico: [], stats: { total: 0, esteMes: 0, sequenciaAtual: 0, totalMesesAtivos: 0, metaMensal: usuario.metaMensal || 0 }, graficoMeses: [] };
 
     // Buscar treinos atribuídos ao aluno (com status de conclusão)
     let treinosAtribuidos: any[] = [];
@@ -214,7 +227,7 @@ router.get("/perfil", somenteLogado, (req, res) => {
         treinConcluidoIds = conclusaoRepo.listarPorAluno(meuAluno.id).map(c => c.treinoId);
     }
 
-    res.render("perfil", { usuario, meuAluno, historico, stats, treinosAtribuidos, treinConcluidoIds });
+    res.render("perfil", { usuario, meuAluno, historico, stats, graficoMeses: JSON.stringify(graficoMeses), treinosAtribuidos, treinConcluidoIds });
 });
 
 router.get("/perfil/editar", somenteLogado, (req, res) => {
@@ -264,8 +277,6 @@ router.get("/api/stats", somenteGestor, (req, res) => {
 
 // --- GESTÃO DE ALUNOS ---
 
-// Lista contas de login do tipo "Aluno" que ainda podem ser vinculadas a um cadastro de matrícula
-// (exclui as que já estão vinculadas a outro aluno, mas mantém a que já pertence a `alunoAtualId`)
 function contasDisponiveisParaVinculo(alunoAtualId?: string) {
     const alunos = alunoRepo.listar();
     const idsVinculados = new Set(
@@ -320,7 +331,6 @@ router.get("/alunos/:id/historico", somenteGestor, (req, res) => {
     const aluno = alunoRepo.buscar(String(req.params.id));
     if (!aluno) return res.redirect("/alunos");
 
-    // Busca o usuário vinculado para pegar a meta mensal
     const usuarioVinculado = aluno.usuarioId ? usuarioRepo.buscarPorId(aluno.usuarioId) : undefined;
 
     const { historico, stats } = montarHistoricoDoAluno(aluno.id, usuarioVinculado?.metaMensal);
@@ -330,7 +340,6 @@ router.get("/alunos/:id/historico", somenteGestor, (req, res) => {
 
 // --- GESTÃO DE TREINOS ---
 
-// express.urlencoded envia checkbox[] como string (1 marcado), array (2+) ou undefined (nenhum) — isso normaliza pra array sempre
 function normalizarLista(valor: unknown): string[] {
     if (!valor) return [];
     return Array.isArray(valor) ? valor.map(String) : [String(valor)];
@@ -356,7 +365,6 @@ router.get("/treinos", somenteLogado, (req, res) => {
             concluidosIds = conclusaoRepo.listarPorAluno(meuAluno.id).map(c => c.treinoId);
         }
     } else {
-        // Admin/Professor: quantos alunos já concluíram cada treino
         todosTreinos.forEach(t => {
             totalConcluidosPorTreino[t.id] = conclusaoRepo.listarPorTreino(t.id).length;
         });
@@ -379,7 +387,6 @@ router.get("/treinos/concluir/:id", somenteLogado, (req, res) => {
         }
     }
 
-    // Se a ação veio do dashboard (botão "marcar como concluído" do próximo treino), volta pra lá
     res.redirect(req.query.voltar === "dashboard" ? "/dashboard" : "/treinos");
 });
 

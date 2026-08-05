@@ -127,3 +127,42 @@ footer,
     display: inline-flex;
   }
 }
+/* ---------- Toggle de Tema ---------- */
+.btn-tema {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+}
+
+.btn-tema:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+/* Ajuste da navbar no tema claro */
+body.light-theme .navbar {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+body.light-theme .navbar .logo {
+  color: var(--text-main);
+}
+
+body.light-theme .navbar a {
+  color: var(--text-muted);
+}
+
+body.light-theme .navbar a:hover {
+  color: var(--text-main);
+  background: rgba(0, 0, 0, 0.05);
+}

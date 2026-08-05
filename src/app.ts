@@ -19,11 +19,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'academia-em-secret',
+    secret: 'academia-em-secret-2025-fixo',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 * 8 } // 8 horas
-}));
+    cookie: { 
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 dias
+        httpOnly: true,
+        sameSite: 'lax'
+    }
+} ));
 
 // Deixa o usuário logado disponível em todas as views (ex: <% if (usuario.tipo === 'Aluno') %>)
 app.use((req, res, next) => {

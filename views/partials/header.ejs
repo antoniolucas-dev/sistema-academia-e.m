@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/dark-mode.css">
     <link rel="stylesheet" href="/css/home.css">
     <link rel="stylesheet" href="/css/dashboard.css">
     <link rel="stylesheet" href="/css/alunos.css">
@@ -17,5 +18,20 @@
     <link rel="stylesheet" href="/css/perfil.css">
     <link rel="stylesheet" href="/css/informações.css">
     <link rel="stylesheet" href="/css/responsive.css">
+    <script>
+        // Aplica o tema salvo antes do render para evitar flash de tema errado
+        (function( ) {
+            const tema = localStorage.getItem('tema');
+            if (tema === 'light') {
+                document.documentElement.classList.add('ready-light');
+            }
+        })();
+    </script>
+    <style>
+        /* Evita flash de tema errado antes do CSS carregar */
+        .ready-light body {
+            background: #f4f4f5 !important;
+        }
+    </style>
 </head>
-<body>
+<body class="<%= (typeof tema !== 'undefined' && tema === 'light') ? 'light-theme' : '' %>">

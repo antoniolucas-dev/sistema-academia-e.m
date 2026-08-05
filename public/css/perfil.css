@@ -448,6 +448,17 @@
   color: var(--primary);
 }
 
+/* ---------- Gráfico de Evolução ---------- */
+.grafico-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 1.5rem;
+  height: 220px;
+  position: relative;
+}
 /* ---------- Próximo Treino Card ---------- */
 .proximo-treino {
   background: linear-gradient(135deg, var(--bg-card) 0%, rgba(225, 29, 72, 0.05) 100%);
