@@ -8,43 +8,49 @@
 
     <main class="content">
 
-        <h1>Meu Perfil</h1>
-
-        <div class="perfil-card">
-
-            <h2><%= usuario.nome %></h2>
-
-            <p><strong>Email:</strong> <%= usuario.email %></p>
-
-            <p><strong>Tipo:</strong> <%= usuario.tipo %></p>
-
+        <div class="perfil-header">
+            <div class="perfil-foto-container">
+                <% if (usuario.foto) { %>
+                    <img src="<%= usuario.foto %>" alt="Foto de perfil" class="perfil-foto">
+                <% } else { %>
+                    <div class="perfil-foto-placeholder">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                <% } %>
+            </div>
+            <div class="perfil-info">
+                <h1><%= usuario.nome %></h1>
+                <div>
+                    <span class="perfil-tipo <%= usuario.tipo.toLowerCase() %>">
+                        <i class="fa-solid fa-user-tag"></i>
+                        <%= usuario.tipo %>
+                    </span>
+                    <% if (meuAluno) { %>
+                        <span class="badge-faixa"><%= meuAluno.faixa %></span>
+                    <% } %>
+                </div>
+                <div class="perfil-email">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span><%= usuario.email %></span>
+                </div>
+            </div>
+            <div class="perfil-header-actions">
+                <a href="/perfil/editar" class="btn">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Editar Perfil
+                </a>
+            </div>
         </div>
 
-        <% if (usuario.tipo === 'Aluno') { %>
-            <div class="perfil-card" style="margin-top: 1.5rem;">
+        <% if (usuario.tipo === 'Aluno' && meuAluno) { %>
 
-                <h2>Minha matrícula</h2>
+            <div class="perfil-section">
+                <h2 class="perfil-section-title">
+                    <i class="fa-solid fa-chart-bar"></i>
+                    Minhas Estatísticas
+                </h2>
 
-                <% if (meuAluno) { %>
-
-                    <p><strong>Faixa:</strong> <span class="badge-faixa"><%= meuAluno.faixa %></span></p>
-
-                    <p><strong>Telefone cadastrado:</strong> <%= meuAluno.telefone %></p>
-
-                <% } else { %>
-
-                    <p>
-                        Sua conta ainda não está vinculada a um cadastro de aluno matriculado.
-                        Peça para um professor ou administrador fazer o vínculo na área de Alunos.
-                    </p>
-
-                <% } %>
-
-            </div>
-
-            <% if (meuAluno) { %>
-
-                <div class="dashboard-cards" style="margin-top: 1.5rem;">
+                <div class="dashboard-cards">
                     <div class="card">
                         <i class="fa-solid fa-check-double card-icone"></i>
                         <p class="estatistica-valor"><%= stats.total %></p>
@@ -62,44 +68,163 @@
                         <p class="estatistica-valor"><%= stats.sequenciaAtual %></p>
                         <p class="card-label">Dias seguidos treinando</p>
                     </div>
+
+                    <div class="card">
+                        <i class="fa-solid fa-trophy card-icone"></i>
+                        <p class="estatistica-valor"><%= stats.totalMesesAtivos %></p>
+                        <p class="card-label">Meses ativos</p>
+                    </div>
                 </div>
+            </div>
 
-                <div class="perfil-card" style="margin-top: 1.5rem;">
-
-                    <h2>Histórico de treinos concluídos</h2>
-
-                    <% if (historico.length > 0) { %>
-
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Treino</th>
-                                    <th>Categoria</th>
-                                    <th>Duração</th>
-                                    <th>Concluído em</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% historico.forEach(item => { %>
-                                    <tr>
-                                        <td><%= item.treino.nome %></td>
-                                        <td><%= item.treino.categoria %></td>
-                                        <td><%= item.treino.duracao %> min</td>
-                                        <td><%= new Date(item.data).toLocaleString('pt-BR') %></td>
-                                    </tr>
-                                <% }) %>
-                            </tbody>
-                        </table>
-
-                    <% } else { %>
-
-                        <p>Você ainda não concluiu nenhum treino. Bora começar? 💪</p>
-
-                    <% } %>
-
+            <% if (stats.metaMensal && stats.metaMensal > 0) { %>
+            <div class="progresso-mensal">
+                <div class="progresso-mensal-header">
+                    <h3><i class="fa-solid fa-bullseye" style="margin-right: 0.5rem; color: var(--primary);"></i> Meta mensal de treinos</h3>
+                    <span><%= stats.esteMes %> / <%= stats.metaMensal %></span>
                 </div>
-
+                <div class="progresso-barra-container">
+                    <div class="progresso-barra" style="--largura: <%= Math.min((stats.esteMes / stats.metaMensal) * 100, 100) %>%; width: var(--largura);"></div>
+                </div>
+                <div class="progresso-info">
+                    <span><%= Math.min((stats.esteMes / stats.metaMensal) * 100, 100).toFixed(0) %>% concluído</span>
+                    <span><%= Math.max(stats.metaMensal - stats.esteMes, 0) %> restante<%= Math.max(stats.metaMensal - stats.esteMes, 0) !== 1 ? 's' : '' %></span>
+                </div>
+            </div>
             <% } %>
+
+            <div class="perfil-section">
+                <h2 class="perfil-section-title">
+                    <i class="fa-solid fa-id-card"></i>
+                    Minha Matrícula
+                </h2>
+
+                <div class="perfil-card">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <div>
+                                <div class="info-label">Faixa</div>
+                                <div class="info-value"><span class="badge-faixa"><%= meuAluno.faixa %></span></div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fa-solid fa-phone"></i>
+                            <div>
+                                <div class="info-label">Telefone</div>
+                                <div class="info-value"><%= meuAluno.telefone || 'Não cadastrado' %></div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fa-solid fa-envelope"></i>
+                            <div>
+                                <div class="info-label">Email</div>
+                                <div class="info-value"><%= meuAluno.email %></div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fa-solid fa-user"></i>
+                            <div>
+                                <div class="info-label">Nome na matrícula</div>
+                                <div class="info-value"><%= meuAluno.nome %></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <% if (treinosAtribuidos && treinosAtribuidos.length > 0) { %>
+            <div class="perfil-section">
+                <h2 class="perfil-section-title">
+                    <i class="fa-solid fa-dumbbell"></i>
+                    Meus Treinos Atribuídos
+                </h2>
+
+                <div class="proximo-treino">
+                    <div class="proximo-treino-lista">
+                        <% treinosAtribuidos.forEach(treino => { %>
+                            <div class="treino-mini-card <%= treinConcluidoIds.includes(treino.id) ? 'status-concluido' : '' %>">
+                                <span class="treino-nome">
+                                    <% if (treinConcluidoIds.includes(treino.id)) { %>
+                                        <i class="fa-solid fa-check" style="margin-right: 0.3rem;"></i>
+                                    <% } %>
+                                    <%= treino.nome %>
+                                </span>
+                                <span class="treino-categoria"><%= treino.categoria %></span>
+                                <span class="treino-duracao">
+                                    <i class="fa-solid fa-clock"></i>
+                                    <%= treino.duracao %> min
+                                </span>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+
+            <div class="perfil-section">
+                <h2 class="perfil-section-title">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    Histórico de Atividades
+                </h2>
+
+                <% if (historico.length > 0) { %>
+                    <div class="timeline">
+                        <% historico.forEach((item, index) => { 
+                            const dataFormatada = new Date(item.data);
+                            const hoje = new Date();
+                            const diffDias = Math.floor((hoje - dataFormatada) / (1000 * 60 * 60 * 24));
+                            let labelTempo = '';
+                            if (diffDias === 0) labelTempo = 'Hoje';
+                            else if (diffDias === 1) labelTempo = 'Ontem';
+                            else if (diffDias < 7) labelTempo = diffDias + ' dias atrás';
+                            else if (diffDias < 30) labelTempo = Math.floor(diffDias / 7) + ' semana' + (Math.floor(diffDias / 7) > 1 ? 's' : '') + ' atrás';
+                            else labelTempo = dataFormatada.toLocaleDateString('pt-BR');
+                        %>
+                            <div class="timeline-item" style="--delay: <%= index * 0.05 %>s; animation-delay: var(--delay);">
+                                <div class="timeline-data">
+                                    <div>
+                                        <span class="timeline-treino"><%= item.treino.nome %></span>
+                                        <div class="timeline-data-completa">
+                                            <i class="fa-solid fa-calendar"></i>
+                                            <%= dataFormatada.toLocaleDateString('pt-BR') %> às <%= dataFormatada.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) %>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-meta">
+                                        <span class="badge"><%= item.treino.categoria %></span>
+                                        <span class="duracao">
+                                            <i class="fa-solid fa-clock"></i>
+                                            <%= item.treino.duracao %> min
+                                        </span>
+                                        <% if (index === 0) { %>
+                                            <span style="font-size: 0.7rem; color: var(--success); font-weight: 600;">
+                                                <i class="fa-solid fa-bolt" style="color: var(--success);"></i>
+                                                Recente
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } else { %>
+                    <div class="estado-vazio-timeline">
+                        <i class="fa-solid fa-dumbbell"></i>
+                        <p>Você ainda não concluiu nenhum treino.</p>
+                        <p><span class="emoji">Bora começar? 💪</span></p>
+                    </div>
+                <% } %>
+            </div>
+
+        <% } else if (usuario.tipo === 'Aluno' && !meuAluno) { %>
+
+            <div class="perfil-section">
+                <div class="estado-vazio-timeline">
+                    <i class="fa-solid fa-user-xmark"></i>
+                    <p>Sua conta ainda não está vinculada a um cadastro de aluno matriculado.</p>
+                    <p>Peça para um professor ou administrador fazer o vínculo na área de Alunos.</p>
+                </div>
+            </div>
 
         <% } %>
 

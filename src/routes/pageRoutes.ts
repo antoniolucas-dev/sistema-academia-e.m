@@ -45,9 +45,23 @@ function montarHistoricoDoAluno(alunoId: string) {
         cursor.setDate(cursor.getDate() - 1);
     }
 
+    // Meses ativos: quantos meses distintos com pelo menos 1 treino concluído
+    const mesesAtivos = new Set(
+        historico.map(item => {
+            const d = new Date(item.data);
+            return `${d.getFullYear()}-${d.getMonth()}`;
+        })
+    );
+
     return {
         historico,
-        stats: { total: historico.length, esteMes: concluidosEsteMes, sequenciaAtual }
+        stats: {
+            total: historico.length,
+            esteMes: concluidosEsteMes,
+            sequenciaAtual,
+            totalMesesAtivos: mesesAtivos.size,
+            metaMensal: 12 // Meta padrão de 12 treinos por mês
+        }
     };
 }
 
@@ -73,9 +87,19 @@ router.get("/perfil", somenteLogado, (req, res) => {
 
     const { historico, stats } = meuAluno
         ? montarHistoricoDoAluno(meuAluno.id)
-        : { historico: [], stats: { total: 0, esteMes: 0, sequenciaAtual: 0 } };
+        : { historico: [], stats: { total: 0, esteMes: 0, sequenciaAtual: 0, totalMesesAtivos: 0, metaMensal: 0 } };
 
-    res.render("perfil", { usuario, meuAluno, historico, stats });
+    // Buscar treinos atribuídos ao aluno (com status de conclusão)
+    let treinosAtribuidos: any[] = [];
+    let treinConcluidoIds: string[] = [];
+
+    if (meuAluno) {
+        const todosTreinos = treinoRepo.listar();
+        treinosAtribuidos = todosTreinos.filter(t => (t.alunosIds || []).includes(meuAluno.id));
+        treinConcluidoIds = conclusaoRepo.listarPorAluno(meuAluno.id).map(c => c.treinoId);
+    }
+
+    res.render("perfil", { usuario, meuAluno, historico, stats, treinosAtribuidos, treinConcluidoIds });
 });
 
 router.get("/perfil/editar", somenteLogado, (req, res) => {
