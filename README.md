@@ -24,7 +24,7 @@ O **Academia E.M.** é um sistema desenvolvido para auxiliar no gerenciamento de
 - Gerenciamento de treinos
 - Dashboard
 - Página de perfil
-- ℹPágina de informações
+- Página de informações
 - Modo escuro
 - Upload de arquivos
 - Testes automatizados
