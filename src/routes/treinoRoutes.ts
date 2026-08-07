@@ -10,38 +10,32 @@ router.get("/", (req, res) => {
 
 router.get("/:id", (req, res) => {
   const treino = repository.buscarPorId(req.params.id);
-
   if (!treino) {
     return res.status(404).json({
       mensagem: "Treino não encontrado"
     });
   }
-
   res.json(treino);
 });
 
 router.post("/", (req, res) => {
   const { nome, categoria, duracao, descricao } = req.body;
-
   const treino = repository.criar(
     nome,
     categoria,
     Number(duracao),
     descricao
   );
-
   res.status(201).json(treino);
 });
 
 router.delete("/:id", (req, res) => {
   const removido = repository.remover(req.params.id);
-
   if (!removido) {
     return res.status(404).json({
       mensagem: "Treino não encontrado"
     });
   }
-
   res.json({
     mensagem: "Treino removido"
   });

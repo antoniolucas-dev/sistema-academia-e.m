@@ -6,16 +6,11 @@ document.addEventListener('DOMContentLoaded', function () {
     inicializarGraficoMatriculas();
 });
 
-/**
- * Exibe uma saudação dinâmica de acordo com o horário do dia.
- * Espera um elemento com id="saudacao-usuario" e atributo data-nome
- * contendo o nome do usuário logado.
- */
+
 function inicializarSaudacao() {
     var elementoSaudacao = document.getElementById('saudacao-usuario');
-
     if (!elementoSaudacao) {
-        return;
+    return;
     }
 
     var nomeUsuario = elementoSaudacao.getAttribute('data-nome') || '';
@@ -70,13 +65,9 @@ function inicializarRelogio() {
     setInterval(atualizar, 1000);
 }
 
-/**
- * Anima os números dos cards de estatística, contando de 0 até o valor final.
- * Espera elementos com classe "estatistica-valor" e atributo data-valor-final.
- */
+
 function animarContadoresEstatisticas() {
     var elementosContador = document.querySelectorAll('.estatistica-valor[data-valor-final]');
-
     if (!elementosContador || elementosContador.length === 0) {
         return;
     }
@@ -85,7 +76,6 @@ function animarContadoresEstatisticas() {
         if (isNaN(valorFinal)) {
             return;
         }
-
         var valorAtual = 0;
         var duracaoMs = 1000;
         var incrementoPorFrame = valorFinal / (duracaoMs / 16);
@@ -112,15 +102,12 @@ function animarContadoresEstatisticas() {
 function inicializarMenuMobile() {
     var botaoMenu = document.getElementById('btn-menu-mobile');
     var sidebar = document.querySelector('.sidebar');
-
     if (!botaoMenu || !sidebar) {
         return;
     }
-
     botaoMenu.addEventListener('click', function () {
         sidebar.classList.toggle('sidebar-aberta');
     });
-
     document.addEventListener('click', function (evento) {
         var cliqueForaDaSidebar = !sidebar.contains(evento.target);
         var cliqueForaDoBotao = !botaoMenu.contains(evento.target);
@@ -138,26 +125,20 @@ function inicializarMenuMobile() {
  */
 function inicializarGraficoMatriculas() {
     var canvas = document.getElementById('grafico-matriculas');
-
     if (!canvas) {
         return;
     }
-
     var dadosBrutos = canvas.getAttribute('data-grafico');
-
     if (!dadosBrutos) {
         return;
     }
-
     var dados;
-
     try {
         dados = JSON.parse(dadosBrutos);
     } catch (erro) {
         console.error('Erro ao interpretar os dados do gráfico:', erro);
         return;
     }
-
     if (!Array.isArray(dados) || dados.length === 0) {
         return;
     }

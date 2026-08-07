@@ -1,7 +1,3 @@
-/* ============================================================
-   DARK MODE — Variáveis de tema claro + transição suave
-   ============================================================ */
-
 /* Tema claro (ativado quando o body tem a classe .light-theme) */
 body.light-theme {
   --bg-dark: #f4f4f5;

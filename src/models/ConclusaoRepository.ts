@@ -8,15 +8,12 @@ export class ConclusaoRepository {
   listar(): Conclusao[] {
     return lerArquivo(ARQUIVO);
   }
-
   listarPorAluno(alunoId: string): Conclusao[] {
     return this.listar().filter(c => c.alunoId === alunoId);
   }
-
   listarPorTreino(treinoId: string): Conclusao[] {
     return this.listar().filter(c => c.treinoId === treinoId);
   }
-
   buscar(treinoId: string, alunoId: string): Conclusao | undefined {
     return this.listar().find(c => c.treinoId === treinoId && c.alunoId === alunoId);
   }
@@ -24,14 +21,12 @@ export class ConclusaoRepository {
   marcar(treinoId: string, alunoId: string): Conclusao {
     const existente = this.buscar(treinoId, alunoId);
     if (existente) return existente; // já concluído, não duplica
-
     const nova: Conclusao = {
       id: gerarId(),
       treinoId,
       alunoId,
       data: new Date().toISOString()
     };
-
     const conclusoes = this.listar();
     conclusoes.push(nova);
     salvarArquivo(ARQUIVO, conclusoes);

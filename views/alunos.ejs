@@ -1,104 +1,82 @@
 <%- include("partials/header", { titulo: "Alunos" }) %>
-
 <%- include("partials/navbar") %>
 
 <div class="container">
+<%- include("partials/sidebar") %>
+<main class="content">
+ <div class="page-header">
+ <div>
+    <h1>Alunos</h1>
+    <p>Gerencie os alunos matriculados na academia.</p>
+    </div>
+    <% if (usuario && usuario.tipo !== 'Aluno') { %>
+    <a href="/alunos/novo" class="btn">
+     Novo Aluno
+    </a>
+    <% } %>
+    </div>
 
-    <%- include("partials/sidebar") %>
+<table class="table">
+<thead>
+    <tr>
+    <th></th>
+    <th>Nome</th>
+    <th>E-mail</th>
+    <th>Telefone</th>
+    <th>Faixa</th>
+    <th>Ações</th>
+    </tr>
+    </thead>
 
-    <main class="content">
+<tbody>
+<% if (alunos && alunos.length > 0) { %>
+<% alunos.forEach(aluno => { %>
+   <tr>
+   <td>
+   <div class="aluno-avatar-placeholder">
+    <%= aluno.nome.charAt(0).toUpperCase() %>
+   </div>
+   </td>
+   <td class="aluno-nome"><%= aluno.nome %></td>
+   <td><%= aluno.email %></td>
+   <td><%= aluno.telefone %></td>
+   <td>
+   <span class="badge-faixa"><%= aluno.faixa %></span>
+   </td>
 
-        <div class="page-header">
+    <td>
+    <% if (usuario && usuario.tipo !== 'Aluno') { %>
+    <div class="acoes-container">
+    <a href="/alunos/editar/<%= aluno.id %>" class="btn-edit">
+        Editar
+    </a>
 
-            <div>
-                <h1>Alunos</h1>
-                <p>Gerencie os alunos matriculados na academia.</p>
-            </div>
+    <a href="/alunos/<%= aluno.id %>/historico" class="btn-edit">
+        Histórico
+    </a>
 
-            <% if (usuario && usuario.tipo !== 'Aluno') { %>
-                <a href="/alunos/novo" class="btn">
-                    Novo Aluno
-                </a>
-            <% } %>
+    <a href="/alunos/excluir/<%= aluno.id %>" class="btn-delete">
+        Excluir
+    </a>
+    </div>
+    <% } %>
+    </td>
 
-        </div>
+    </tr>
+    <% }) %>
+    <% } else { %>
+     <tr>
 
-        <table class="table">
+    <td colspan="6">
+      Nenhum aluno cadastrado.
+    </td>
 
-            <thead>
+    </tr>
+     <% } %>
 
-                <tr>
-                    <th></th>
-                    <th>Nome</th>
-                    <th>E-mail</th>
-                    <th>Telefone</th>
-                    <th>Faixa</th>
-                    <th>Ações</th>
-                </tr>
+    </tbody>
 
-            </thead>
-
-            <tbody>
-
-                <% if (alunos && alunos.length > 0) { %>
-
-                    <% alunos.forEach(aluno => { %>
-
-                        <tr>
-
-                            <td>
-                                <div class="aluno-avatar-placeholder">
-                                    <%= aluno.nome.charAt(0).toUpperCase() %>
-                                </div>
-                            </td>
-
-                            <td class="aluno-nome"><%= aluno.nome %></td>
-
-                            <td><%= aluno.email %></td>
-
-                            <td><%= aluno.telefone %></td>
-
-                            <td>
-                                <span class="badge-faixa"><%= aluno.faixa %></span>
-                            </td>
-
-                            <td>
-                                <% if (usuario && usuario.tipo !== 'Aluno') { %>
-                                    <div class="acoes-container">
-                                        <a href="/alunos/editar/<%= aluno.id %>" class="btn-edit">
-                                            Editar
-                                        </a>
-
-                                        <a href="/alunos/<%= aluno.id %>/historico" class="btn-edit">
-                                            Histórico
-                                        </a>
-
-                                        <a href="/alunos/excluir/<%= aluno.id %>" class="btn-delete">
-                                            Excluir
-                                        </a>
-                                    </div>
-                                <% } %>
-                            </td>
-
-                        </tr>
-
-                    <% }) %>
-
-                <% } else { %>
-
-                    <tr>
-
-                        <td colspan="6">
-                            Nenhum aluno cadastrado.
-                        </td>
-
-                    </tr>
-
-                <% } %>
-
-            </tbody>
-
-        </table>
+    </table>
 
     </main>
 

@@ -3,12 +3,10 @@ import { lerArquivo, salvarArquivo } from "../utils/jsonHelper";
 import { gerarId } from "../utils/idGenerator";
 
 const ARQUIVO = "dados/exercicios.json";
-
 export class ExercicioRepository {
   listar(): Exercicio[] {
     return lerArquivo(ARQUIVO);
   }
-
   buscarPorId(id: string): Exercicio | undefined {
     return this.listar().find(exercicio => exercicio.id === id);
   }
@@ -21,7 +19,6 @@ export class ExercicioRepository {
       series,
       repeticoes
     };
-
     const exercicios = this.listar();
     exercicios.push(novoExercicio);
     salvarArquivo(ARQUIVO, exercicios);

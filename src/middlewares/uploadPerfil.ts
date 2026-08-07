@@ -3,7 +3,6 @@ import path from "path";
 import fs from "fs";
 
 const DESTINO = "public/uploads/perfil";
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     fs.mkdirSync(DESTINO, { recursive: true });

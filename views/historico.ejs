@@ -1,19 +1,14 @@
 <%- include("partials/header", { titulo: "Histórico - " + aluno.nome }) %>
-
 <%- include("partials/navbar") %>
 
 <div class="container">
-
     <%- include("partials/sidebar") %>
-
     <main class="content">
-
         <div class="page-header">
             <div>
                 <h1>Histórico de <%= aluno.nome %></h1>
                 <p>Faixa: <span class="badge-faixa"><%= aluno.faixa %></span></p>
             </div>
-
             <a href="/alunos" class="btn">Voltar</a>
         </div>
 

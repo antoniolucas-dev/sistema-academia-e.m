@@ -1,15 +1,9 @@
 <%- include("partials/header", { titulo: "Treinos" }) %>
-
 <%- include("partials/navbar") %>
-
 <div class="container">
-
     <%- include("partials/sidebar") %>
-
     <main class="content">
-
         <div class="page-header">
-
             <h1>Treinos</h1>
 
             <% if (usuario && usuario.tipo !== 'Aluno') { %>
@@ -17,20 +11,15 @@
                     Novo Treino
                 </a>
             <% } %>
-
         </div>
-
         <% if (usuario && usuario.tipo === 'Aluno' && !meuAluno) { %>
             <p style="color: var(--text-muted);">
                 Sua conta ainda não está vinculada a um cadastro de aluno matriculado, então nenhum treino pode
                 ser exibido aqui. Peça para um professor ou administrador fazer o vínculo.
             </p>
         <% } %>
-
         <table class="table">
-
             <thead>
-
                 <tr>
                     <th>Nome</th>
                     <th>Categoria</th>
@@ -43,23 +32,14 @@
                         <th>Status</th>
                     <% } %>
                 </tr>
-
             </thead>
-
             <tbody>
-
                 <% if (treinos && treinos.length > 0) { %>
-
                     <% treinos.forEach(treino => { %>
-
                         <tr>
-
                             <td class="aluno-nome"><%= treino.nome %></td>
-
                             <td><span class="badge-categoria"><%= treino.categoria %></span></td>
-
                             <td><span class="treino-duracao"><%= treino.duracao %> min</span></td>
-
                             <td>
                                 <% const exsDoTreino = treino.exercicios || []; %>
                                 <% if (exsDoTreino.length > 0) { %>
@@ -81,9 +61,7 @@
                                     <span class="treino-duracao">Nenhum</span>
                                 <% } %>
                             </td>
-
                             <% if (usuario && usuario.tipo !== 'Aluno') { %>
-
                                 <td>
                                     <% const idsAtribuidos = treino.alunosIds || []; %>
                                     <% if (idsAtribuidos.length > 0) { %>

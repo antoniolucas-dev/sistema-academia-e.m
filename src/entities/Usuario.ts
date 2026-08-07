@@ -1,5 +1,4 @@
 export type TipoUsuario = "Administrador" | "Professor" | "Aluno";
-
 export default class Usuario{
     constructor(
         public id:string,

@@ -3,7 +3,6 @@ import { lerArquivo, salvarArquivo } from "../utils/jsonHelper";
 import { gerarId } from "../utils/idGenerator";
 
 const ARQUIVO = "dados/alunos.json";
-
 export class AlunoRepository {
   listar(): Aluno[] {
     return lerArquivo(ARQUIVO);

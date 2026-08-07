@@ -8,7 +8,6 @@ export class ProgressoRepository {
   listar(): Progresso[] {
     return lerArquivo(ARQUIVO);
   }
-
   buscar(treinoId: string, alunoId: string): Progresso | undefined {
     return this.listar().find(p => p.treinoId === treinoId && p.alunoId === alunoId);
   }

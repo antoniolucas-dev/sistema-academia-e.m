@@ -1,7 +1,6 @@
 import multer from "multer";
 import path from "path";
 
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(
@@ -9,7 +8,6 @@ const storage = multer.diskStorage({
       "public/uploads/alunos"
     );
   },
-
   filename: (req, file, cb) => {
     const nomeArquivo =
       Date.now() +
